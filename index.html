@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sports Analytics</title>
+
+<style>
+  /* Full screen container */
+  .slider {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    z-index: -1;
+  }
+
+  /* Slide images */
+  .slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    animation: fade 18s infinite;
+  }
+
+  /* Animation speed logic */
+  .slide:nth-child(1) { animation-delay: 0s; }
+  .slide:nth-child(2) { animation-delay: 3s; }
+  .slide:nth-child(3) { animation-delay: 6s; }
+  .slide:nth-child(4) { animation-delay: 9s; }
+  .slide:nth-child(5) { animation-delay: 12s; }
+  .slide:nth-child(6) { animation-delay: 15s; }
+
+  /* FADE animation - slow → fast → slow */
+  @keyframes fade {
+    0%   { opacity: 0; }
+    10%  { opacity: 1; }   /* slow fade in */
+    30%  { opacity: 1; }   /* visible */
+    40%  { opacity: 0; }   /* fast fade out */
+    100% { opacity: 0; }
+  }
+
+  /* Title text */
+  .title {
+    position: absolute;
+    top: 40%;
+    width: 100%;
+    text-align: center;
+    font-size: 75px;
+    font-family: Arial, sans-serif;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 0 10px black;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="slider">
+  <img class="slide" src="cricket1.jpg">
+  <img class="slide" src="cricket2.jpg">
+  <img class="slide" src="cricket3.jpg">
+  <img class="slide" src="cricket4.jpg">
+  <img class="slide" src="cricket5.jpg">
+  <img class="slide" src="cricket6.jpg">
+</div>
+
+<div class="title">
+  SPORTS ANALYTICS
+</div>
+
+</body>
+</html>

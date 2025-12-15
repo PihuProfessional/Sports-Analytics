@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sports Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    background-color: whitesmoke;
+    color: white;
+  }
+
+  /* --- TEAM COMPARISON SECTION --- */
+  .team-comparison-section {
+    padding: 50px 20px;
+    text-align: center;
+  }
+
+  .section-title {
+    font-size: 40px;
+    color: #00cccc; /* Teal Blue */
+    text-transform: uppercase;
+    font-weight: 800;
+    margin-bottom: 40px;
+  }
+
+  .comparison-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    max-width: 900px;
+    margin: 0 auto 50px;
+  }
+
+  .team-block {
+    text-align: center;
+  }
+
+  .team-block h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+
+  .team-flag {
+    width: 60px; /* Adjust flag size */
+    height: auto;
+    margin-top: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  }
+
+  .vs {
+    font-size: 30px;
+    font-weight: 800;
+    color: red;
+  }
+
+  /* --- METRICS BARS --- */
+  .metrics-container {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .metric-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .metric-label {
+    font-weight: 700;
+    width: 150px;
+    text-align: center;
+  }
+
+  .bar-container {
+    flex-grow: 1;
+    height: 15px;
+    background-color: #333;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .bar {
+    height: 100%;
+    border-radius: 10px;
+  }
+
+  /* Team 1 Bar (Orange) */
+  .bar-team1 {
+    background-color: #ff6600;
+    float: right; /* Align to the right for the left side bar */
+  }
+
+  /* Team 2 Bar (Teal) */
+  .bar-team2 {
+    background-color: #00cccc;
+  }
+
+  .run-new-analysis-btn {
+    display: inline-block;
+    margin-top: 40px;
+    padding: 15px 30px;
+    background-color: #00cccc;
+    color: black;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+
+  .run-new-analysis-btn:hover {
+    background-color: #00a3a3;
+  }
+
+</style>
+</head>
+
+<body>
+
+<div class="team-comparison-section">
+  <h2 class="section-title">TEAM COMPARISON</h2>
+
+  <div class="comparison-container">
+    <div class="team-block">
+      <h3>India</h3>
+      <img src="India flag.jpg" alt="India Flag" class="team-flag">
+    </div>
+    <div class="vs">VS</div>
+    <div class="team-block">
+      <h3>Australia</h3>
+      <img src="Australia flag logo.jpg" alt="Australia Flag" class="team-flag">
+    </div>
+  </div>
+
+  <div class="metrics-container">
+    <div class="metric-row">
+      <div class="bar-container">
+        <div class="bar bar-team1" style="width: 65%;"></div>
+      </div>
+      <div class="metric-label">WIN RATE</div>
+      <div class="bar-container">
+        <div class="bar bar-team2" style="width: 55%;"></div>
+      </div>
+    </div>
+
+    <div class="metric-row">
+      <div class="bar-container">
+        <div class="bar bar-team1" style="width: 70%;"></div>
+      </div>
+      <div class="metric-label">RUN RATE</div>
+      <div class="bar-container">
+        <div class="bar bar-team2" style="width: 60%;"></div>
+      </div>
+    </div>
+
+    <div class="metric-row">
+      <div class="bar-container">
+        <div class="bar bar-team1" style="width: 20%;"></div>
+      </div>
+      <div class="metric-label">WORLD CUPS</div>
+      <div class="bar-container">
+        <div class="bar bar-team2" style="width: 50%;"></div>
+      </div>
+    </div>
+  </div>
+
+  <a href="#" class="run-new-analysis-btn">Run New Analysis</a>
+
+</div>
+
+</body>
+</html>

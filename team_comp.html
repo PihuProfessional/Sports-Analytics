@@ -3,183 +3,408 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sports Analytics</title>
+<title>Player Comparison - Sports Analytics</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <style>
+  /* --- UI STYLES (FRONTEND) --- */
   body, html {
     margin: 0;
     padding: 0;
     font-family: 'Montserrat', sans-serif;
-    background-color: whitesmoke;
+    background-color: transparent; 
     color: white;
+    overflow-x: hidden;
   }
 
-  /* --- TEAM COMPARISON SECTION --- */
-  .team-comparison-section {
-    padding: 50px 20px;
-    text-align: center;
+  /* BACKGROUND SLIDER */
+  .slider-window {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    z-index: -1; 
+    background-color: #000;
   }
 
-  .section-title {
-    font-size: 40px;
-    color: #00cccc; /* Teal Blue */
-    text-transform: uppercase;
-    font-weight: 800;
-    margin-bottom: 40px;
+  .slider-track {
+    display: flex;
+    width: 600%; 
+    height: 100%;
+    animation: swipeAnimation 18s infinite cubic-bezier(0.65, 0, 0.35, 1);
   }
 
-  .comparison-container {
+  .slide { width: 16.666%; height: 100%; object-fit: cover; }
+
+  @keyframes swipeAnimation {
+    0%, 14%        { transform: translateX(0); }             
+    16.66%, 30.66% { transform: translateX(-16.666%); }      
+    33.33%, 47.33% { transform: translateX(-33.333%); }      
+    50%, 64%       { transform: translateX(-50%); }          
+    66.66%, 80.66% { transform: translateX(-66.666%); }      
+    83.33%, 97.33% { transform: translateX(-83.333%); }      
+    100%           { transform: translateX(0); }             
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); 
+    z-index: 0;
+  }
+
+  /* LAYOUT */
+  .nav-bar { padding: 20px; position: relative; z-index: 10; }
+  .back-btn { text-decoration: none; color: white; font-size: 18px; font-weight: bold; display: flex; align-items: center; }
+  .back-btn:hover { color: #00cccc; }
+
+  .container { 
+    max-width: 1000px; 
+    margin: 0 auto; 
+    padding: 20px; 
+    text-align: center; 
+    position: relative; 
+    z-index: 10; 
+  }
+  
+  h1 { color: #00cccc; text-transform: uppercase; font-size: 40px; margin-bottom: 40px; text-shadow: 0 0 10px black; }
+
+  /* SELECTOR BOXES */
+  .selectors {
     display: flex;
     justify-content: center;
-    align-items: center;
-    gap: 50px;
-    max-width: 900px;
-    margin: 0 auto 50px;
+    gap: 40px;
+    margin-bottom: 50px;
+    background: rgba(0, 0, 0, 0.5); 
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(5px);
   }
 
-  .team-block {
-    text-align: center;
-  }
-
-  .team-block h3 {
-    font-size: 24px;
-    margin-bottom: 10px;
-    font-weight: 700;
-  }
-
-  .team-flag {
-    width: 60px; /* Adjust flag size */
-    height: auto;
-    margin-top: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  }
-
-  .vs {
-    font-size: 30px;
-    font-weight: 800;
-    color: red;
-  }
-
-  /* --- METRICS BARS --- */
-  .metrics-container {
-    max-width: 800px;
-    margin: 0 auto;
+  .player-box {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-  }
-
-  .metric-row {
-    display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 10px;
   }
 
-  .metric-label {
-    font-weight: 700;
-    width: 150px;
+  select {
+    padding: 10px;
+    font-size: 16px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    border: 1px solid #00cccc;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 200px;
     text-align: center;
   }
+  
+  .label-text { font-size: 12px; color: #aaa; text-transform: uppercase; margin-bottom: -5px;}
 
-  .bar-container {
-    flex-grow: 1;
-    height: 15px;
-    background-color: #333;
-    border-radius: 10px;
-    overflow: hidden;
-    position: relative;
+  /* STATS GRID */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 60px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 15px;
+    backdrop-filter: blur(5px);
   }
 
-  .bar {
-    height: 100%;
-    border-radius: 10px;
-  }
+  .stat-label { font-weight: bold; color: #ddd; text-transform: uppercase; font-size: 14px; }
+  .stat-val { font-size: 24px; font-weight: 800; padding: 15px; border-radius: 10px; background: rgba(255,255,255,0.1); transition: 0.3s; }
+  
+  /* Winner Highlight Color */
+  .winner { background: #00cccc; color: black; transform: scale(1.1); box-shadow: 0 0 15px rgba(0, 204, 204, 0.5); }
 
-  /* Team 1 Bar (Orange) */
-  .bar-team1 {
-    background-color: #ff6600;
-    float: right; /* Align to the right for the left side bar */
+  /* ADMIN PANEL STYLES */
+  .admin-panel {
+    border-top: 1px solid rgba(255,255,255,0.2);
+    padding-top: 40px;
+    margin-top: 50px;
+    background: rgba(0,0,0,0.6);
+    padding: 30px;
+    border-radius: 15px;
   }
-
-  /* Team 2 Bar (Teal) */
-  .bar-team2 {
-    background-color: #00cccc;
-  }
-
-  .run-new-analysis-btn {
-    display: inline-block;
-    margin-top: 40px;
-    padding: 15px 30px;
-    background-color: #00cccc;
-    color: black;
-    font-weight: 700;
-    text-decoration: none;
+  
+  .admin-title { font-size: 24px; color: #aaa; margin-bottom: 20px; }
+  .input-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 10px; flex-wrap: wrap; }
+  
+  input {
+    padding: 10px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid #444;
+    color: white;
     border-radius: 5px;
-    transition: background-color 0.3s ease;
   }
 
-  .run-new-analysis-btn:hover {
-    background-color: #00a3a3;
+  .add-btn {
+    padding: 10px 30px;
+    background: #00cccc;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
   }
+  .add-btn:hover { background: white; }
 
 </style>
 </head>
-
 <body>
 
-<div class="team-comparison-section">
-  <h2 class="section-title">TEAM COMPARISON</h2>
+<div class="slider-window">
+  <div class="overlay"></div>
+  <div class="slider-track">
+    <img class="slide" src="cricket1.jpg">
+    <img class="slide" src="cricket2.jpg">
+    <img class="slide" src="cricket3.jpg">
+    <img class="slide" src="cricket4.jpg">
+    <img class="slide" src="cricket5.jpg">
+    <img class="slide" src="cricket6.jpg">
+  </div>
+</div>
 
-  <div class="comparison-container">
-    <div class="team-block">
-      <h3>India</h3>
-      <img src="India flag.jpg" alt="India Flag" class="team-flag">
+<div class="nav-bar">
+  <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+</div>
+
+<div class="container">
+  <h1>Head-to-Head Comparison</h1>
+
+  <div class="selectors">
+    
+    <div class="player-box">
+      <i class="fas fa-user-circle" style="font-size: 50px; color:white;"></i>
+      
+      <span class="label-text">Select Country</span>
+      <select id="countryA" onchange="onCountryAChange()">
+        </select>
+      
+      <span class="label-text">Select Player</span>
+      <select id="playerA" onchange="comparePlayers()">
+        </select>
     </div>
-    <div class="vs">VS</div>
-    <div class="team-block">
-      <h3>Australia</h3>
-      <img src="Australia flag logo.jpg" alt="Australia Flag" class="team-flag">
+
+    <div style="font-size: 30px; font-weight: 800; margin-top: 60px;">VS</div>
+
+    <div class="player-box">
+      <i class="fas fa-user-circle" style="font-size: 50px; color:#00cccc;"></i>
+      
+      <span class="label-text">Select Country</span>
+      <select id="countryB" onchange="updatePlayerList('B')">
+        </select>
+      
+      <span class="label-text">Select Player</span>
+      <select id="playerB" onchange="comparePlayers()">
+        </select>
     </div>
   </div>
 
-  <div class="metrics-container">
-    <div class="metric-row">
-      <div class="bar-container">
-        <div class="bar bar-team1" style="width: 65%;"></div>
-      </div>
-      <div class="metric-label">WIN RATE</div>
-      <div class="bar-container">
-        <div class="bar bar-team2" style="width: 55%;"></div>
-      </div>
-    </div>
-
-    <div class="metric-row">
-      <div class="bar-container">
-        <div class="bar bar-team1" style="width: 70%;"></div>
-      </div>
-      <div class="metric-label">RUN RATE</div>
-      <div class="bar-container">
-        <div class="bar bar-team2" style="width: 60%;"></div>
-      </div>
-    </div>
-
-    <div class="metric-row">
-      <div class="bar-container">
-        <div class="bar bar-team1" style="width: 20%;"></div>
-      </div>
-      <div class="metric-label">WORLD CUPS</div>
-      <div class="bar-container">
-        <div class="bar bar-team2" style="width: 50%;"></div>
-      </div>
-    </div>
+  <div class="stats-grid">
+    <div class="stat-val" id="runsA">0</div> <div class="stat-label">Total Runs</div> <div class="stat-val" id="runsB">0</div>
+    <div class="stat-val" id="avgA">0</div> <div class="stat-label">Batting Average</div> <div class="stat-val" id="avgB">0</div>
+    <div class="stat-val" id="srA">0</div> <div class="stat-label">Strike Rate</div> <div class="stat-val" id="srB">0</div>
+    <div class="stat-val" id="100A">0</div> <div class="stat-label">Centuries</div> <div class="stat-val" id="100B">0</div>
   </div>
 
-  <a href="#" class="run-new-analysis-btn">Run New Analysis</a>
+  <div class="admin-panel">
+    <div class="admin-title"><i class="fas fa-database"></i> Add Player to Database</div>
+    <div class="input-group">
+      <input type="text" id="newCountry" placeholder="Country (e.g. South Africa)">
+      <input type="text" id="newName" placeholder="Player Name">
+    </div>
+    <div class="input-group">
+      <input type="number" id="newRuns" placeholder="Runs">
+      <input type="number" id="newAvg" placeholder="Average">
+      <input type="number" id="newSR" placeholder="Strike Rate">
+      <input type="number" id="new100" placeholder="Centuries">
+    </div>
+    <button class="add-btn" onclick="addNewPlayer()">Add to Database</button>
+  </div>
 
 </div>
 
+<script>
+
+  // 1. THE DATABASE (JSON Structure)
+  // This acts as your backend storage.
+  const defaultDB = {
+    "India": {
+      "Virat Kohli": { runs: 13848, avg: 58.67, sr: 93.6, centuries: 50 },
+      "Rohit Sharma": { runs: 10709, avg: 49.12, sr: 91.5, centuries: 31 },
+      "MS Dhoni": { runs: 10773, avg: 50.57, sr: 87.56, centuries: 10 }
+    },
+    "Australia": {
+      "Steve Smith": { runs: 5356,  avg: 43.34, sr: 88.4, centuries: 12 },
+      "David Warner": { runs: 6932, avg: 45.30, sr: 97.2, centuries: 22 },
+      "Glenn Maxwell": { runs: 3895, avg: 35.40, sr: 150.2, centuries: 4 }
+    },
+    "England": {
+      "Joe Root": { runs: 6522, avg: 48.9, sr: 86.7, centuries: 16 },
+      "Jos Buttler": { runs: 5022, avg: 39.9, sr: 118.7, centuries: 11 }
+    },
+    "South Africa": {
+      "AB de Villiers": { runs: 9577, avg: 53.5, sr: 101.09, centuries: 25 },
+      "David Miller": { runs: 4458, avg: 42.1, sr: 103.3, centuries: 6 }
+    },
+    "New Zealand": {
+      "Kane Williamson": { runs: 6810, avg: 48.1, sr: 81.1, centuries: 13 }
+    }
+  };
+
+  // 2. CONNECT TO LOCAL STORAGE
+  // This saves data to the browser so it persists like a real DB.
+  function loadDatabase() {
+    let db = localStorage.getItem("cricketDB_v4"); // v4 to ensure clean start
+    if (!db) {
+      localStorage.setItem("cricketDB_v4", JSON.stringify(defaultDB));
+      return defaultDB;
+    } else {
+      return JSON.parse(db);
+    }
+  }
+
+  // 3. INITIALIZATION LOGIC
+  function initApp() {
+    const db = loadDatabase();
+    const countryA = document.getElementById("countryA");
+    
+    // Fill Country A dropdown
+    countryA.innerHTML = "";
+    for (let country in db) {
+      countryA.add(new Option(country, country));
+    }
+
+    // Default Selection: India vs Australia
+    countryA.value = "India";
+    
+    // Trigger the filter to setup Country B
+    onCountryAChange();
+  }
+
+  // 4. COUNTRY FILTER LOGIC
+  // If India is selected on Left, remove India from Right dropdown.
+  function onCountryAChange() {
+    const db = loadDatabase();
+    const countryAVal = document.getElementById("countryA").value;
+    const countryB = document.getElementById("countryB");
+
+    // Clear Country B
+    countryB.innerHTML = "";
+
+    // Fill Country B with everything EXCEPT Country A
+    for (let country in db) {
+      if (country !== countryAVal) {
+        countryB.add(new Option(country, country));
+      }
+    }
+
+    // Default to first available option in B logic
+    // Update player lists for both sides
+    updatePlayerList('A');
+    updatePlayerList('B');
+  }
+
+  // 5. UPDATE PLAYER LISTS
+  function updatePlayerList(side) {
+    const db = loadDatabase();
+    const countryVal = document.getElementById("country" + side).value;
+    const playerSelect = document.getElementById("player" + side);
+
+    playerSelect.innerHTML = "";
+    
+    if (db[countryVal]) {
+      const players = db[countryVal];
+      for (let player in players) {
+        playerSelect.add(new Option(player, player));
+      }
+    }
+    
+    // Refresh stats calculation
+    comparePlayers();
+  }
+
+  // 6. COMPARISON ENGINE (The Math)
+ // 6. COMPARISON ENGINE (Updated with Safety Check)
+  function comparePlayers() {
+    const db = loadDatabase();
+    
+    const c1 = document.getElementById('countryA').value;
+    const p1 = document.getElementById('playerA').value;
+    const c2 = document.getElementById('countryB').value;
+    const p2 = document.getElementById('playerB').value;
+
+    // SAFETY CHECK: If any value is missing, STOP immediately.
+    if (!c1 || !p1 || !c2 || !p2) return;
+
+    // DOUBLE CHECK: Does the player actually exist in the database?
+    // This prevents the "undefined" error if the DB is desynced.
+    const data1 = db[c1] ? db[c1][p1] : null;
+    const data2 = db[c2] ? db[c2][p2] : null;
+
+    if (!data1 || !data2) {
+        console.log("Data missing for one of the players. Skipping comparison.");
+        return; 
+    }
+
+    // Now it is safe to access .runs
+    updateStat('runs', data1.runs, data2.runs);
+    updateStat('avg', data1.avg, data2.avg);
+    updateStat('sr', data1.sr, data2.sr);
+    updateStat('100', data1.centuries, data2.centuries);
+  }
+  // 7. ADMIN PANEL LOGIC (Add to DB)
+  function addNewPlayer() {
+    const country = document.getElementById("newCountry").value;
+    const name = document.getElementById("newName").value;
+    const runs = document.getElementById("newRuns").value;
+    const avg = document.getElementById("newAvg").value;
+    const sr = document.getElementById("newSR").value;
+    const cent = document.getElementById("new100").value;
+
+    if(country && name && runs) {
+      let db = loadDatabase();
+
+      // Create country if it doesn't exist
+      if (!db[country]) {
+        db[country] = {};
+      }
+      
+      // Add player data
+      db[country][name] = { 
+        runs: Number(runs), 
+        avg: Number(avg), 
+        sr: Number(sr), 
+        centuries: Number(cent) 
+      };
+      
+      // Save back to Local Storage
+      localStorage.setItem("cricketDB_v4", JSON.stringify(db));
+      
+      alert(`${name} added to ${country}!`);
+      
+      // Refresh App
+      initApp(); 
+    } else {
+      alert("Please fill in Country, Name and Stats.");
+    }
+  }
+
+  // Start the application
+  initApp();
+
+</script>
 </body>
 </html>

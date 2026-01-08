@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cricket Player Stats</title>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #eef1f5;
+        }
+
+        header {
+            background: #1e3c72;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 30px auto;
+        }
+
+        .search-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        input {
+            padding: 10px;
+            width: 250px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 18px;
+            font-size: 16px;
+            margin-left: 10px;
+            background: #1e3c72;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background: #16335a;
+        }
+
+        .player-section {
+            display: none;
+            margin-top: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .player-info {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .info-box {
+            width: 30%;
+            min-width: 200px;
+            margin-bottom: 15px;
+            background: #f7f9fc;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .chart-box {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<header>🏏 Cricket Player Statistics</header>
+
+<div class="container">
+
+    <div class="search-box">
+        <input type="text" id="playerName" placeholder="Enter Player Name">
+        <button onclick="loadPlayer()">Search</button>
+    </div>
+
+    <div id="playerSection" class="player-section">
+
+        <h2 id="playerTitle"></h2>
+
+        <div class="player-info">
+            <div class="info-box">
+                <strong>Total Matches</strong>
+                <p id="matches"></p>
+            </div>
+            <div class="info-box">
+                <strong>Total Runs</strong>
+                <p id="runs"></p>
+            </div>
+            <div class="info-box">
+                <strong>Highest Score</strong>
+                <p id="highest"></p>
+            </div>
+        </div>
+
+        <div class="chart-box">
+            <canvas id="statsChart"></canvas>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    const players = {
+        "virat kohli": {
+            matches: 500,
+            totalRuns: 26000,
+            highest: 254,
+            years: ["2012", "2014", "2016", "2018", "2020", "2022", "2024"],
+            runs: [1200, 1500, 1800, 2100, 1100, 1400, 1600]
+        },
+        "ms dhoni": {
+            matches: 538,
+            totalRuns: 17266,
+            highest: 224,
+            years: ["2006", "2008", "2010", "2012", "2014", "2016", "2018"],
+            runs: [900, 1100, 1300, 1400, 1200, 900, 700]
+        },
+        "sachin tendulkar": {
+            matches: 664,
+            totalRuns: 34357,
+            highest: 248,
+            years: ["1996", "1999", "2002", "2005", "2008", "2010", "2012"],
+            runs: [1100, 1400, 1600, 1800, 1700, 1900, 1500]
+        }
+    };
+
+    let chart;
+
+    function loadPlayer() {
+        const name = document.getElementById("playerName").value.toLowerCase();
+        const data = players[name];
+
+        if (!data) {
+            alert("Player not found! Try Virat Kohli, MS Dhoni, Sachin Tendulkar");
+            return;
+        }
+
+        document.getElementById("playerSection").style.display = "block";
+        document.getElementById("playerTitle").innerText = name.toUpperCase();
+        document.getElementById("matches").innerText = data.matches;
+        document.getElementById("runs").innerText = data.totalRuns;
+        document.getElementById("highest").innerText = data.highest;
+
+        const ctx = document.getElementById("statsChart").getContext("2d");
+
+        if (chart) chart.destroy();
+
+        chart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: data.years,
+                datasets: [{
+                    label: "Runs Per Year",
+                    data: data.runs,
+                    borderColor: "#1e3c72",
+                    backgroundColor: "rgba(30,60,114,0.2)",
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: "Performance Over Years"
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics in Sports Analytics</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+   <header class="search-portal">
+    <nav class="nav-container">
+        <div class="logo">PERFORMANCE<span>METRICS</span></div>
+        <ul class="nav-links">
+        <li><a href="#playerGrid" class="player">Players</a></li>
+        <li><a href="#comparison-zone" class="compare-link">Compare Players</a></li>
+    </ul>
+    </nav>
+    <div class="search-container">
+    <input type="text" id="playerSearch" placeholder="Type a name (e.g. Virat, Sachin...)" onkeyup="filterPlayers()">
+</div>
+</header>
+
+<main id="playerGrid">
+    <section class="player-section" data-name="Rohit Sharma" id="rohit">
+        <div class="overlay"></div>
+        <div class="content">
+            <h2 class="reveal-text">Rohit Sharma</h2>
+            <p class="tagline">The Hitman | 2025 Champions Trophy Winner</p>
+            <div class="stats-grid">
+                <div class="stat-card"><h3>11,500+</h3><p>ODI Runs</p></div>
+                <div class="stat-card"><h3>49</h3><p>T20I Wins (Capt)</p></div>
+                <div class="stat-card"><h3>31</h3><p>ODI Hundreds</p></div>
+                <div class="stat-card"><h3>140.8</h3><p>T20I SR</p></div>
+            </div>
+           <canvas id="chart-Rohit" width="400" height="200"></canvas>
+    <button class="btn-compare" onclick="analyzePerformance('Rohit Sharma', 'chart-Rohit')">Analyze Performance</button>
+
+        </div>
+    </section>
+
+<section class="player-section" data-name="Smriti Mandhana" id="smriti">
+        <div class="overlay"></div>
+        <div class="content">
+            <h2 class="reveal-text">Smriti Mandhana</h2>
+            <p class="tagline">World Champion | #1 Ranked Batter</p>
+            <div class="stats-grid">
+                <div class="stat-card"><h3>10,000+</h3><p>Int'l Runs</p></div>
+                <div class="stat-card"><h3>150+</h3><p>T20I Caps</p></div>
+                <div class="stat-card"><h3>48.4</h3><p>ODI Average</p></div>
+                <div class="stat-card"><h3>112</h3><p>Best T20I Score</p></div>
+            </div>
+            <canvas id="chart-Smriti" width="400" height="200"></canvas>
+    <button class="btn-compare" onclick="analyzePerformance('Smriti Mandhana', 'chart-Smriti')">Analyze Performance</button>
+        </div>
+    </section>
+
+    <section class="player-section" data-name="Harmanpreet Kaur" id="harman">
+        <div class="overlay"></div>
+        <div class="content">
+            <h2 class="reveal-text">Harmanpreet Kaur</h2>
+            <p class="tagline">Captain Courageous | 2025 World Cup Winner</p>
+            <div class="stats-grid">
+                <div class="stat-card"><h3>8,000+</h3><p>Int'l Runs</p></div>
+                <div class="stat-card"><h3>78</h3><p>T20I Wins (Capt)</p></div>
+                <div class="stat-card"><h3>171*</h3><p>Iconic WC Score</p></div>
+                <div class="stat-card"><h3>2</h3><p>WPL Titles</p></div>
+            </div>
+            <canvas id="chart-Harman" width="400" height="200"></canvas>
+    <button class="btn-compare" onclick="analyzePerformance('Harmanpreet Kaur', 'chart-Harman')">Analyze Performance</button>
+        </div>
+    </section>
+</main>
+    <section class="player-section" data-name="Virat Kohli" id="virat">
+        <div class="overlay"></div>
+        <div class="content">
+            <h2 class="reveal-text">Virat Kohli</h2>
+            <p class="tagline">The Modern GOAT | 2025 IPL Champion</p>
+            <div class="stats-grid" id="kohli-stats">
+                <div class="stat-card"><h3>84</h3><p>Int'l Centuries</p></div>
+                <div class="stat-card"><h3>53</h3><p>ODI Tons</p></div>
+                <div class="stat-card"><h3>58.7</h3><p>Average</p></div>
+                <div class="stat-card"><h3>93.5</h3><p>Strike Rate</p></div>
+            </div>
+           <canvas id="chart-Virat" width="400" height="200"></canvas>
+    <button class="btn-compare" onclick="analyzePerformance('Virat Kohli', 'chart-Virat')">Analyze Performance</button>
+        </div>
+    
+    </section>
+    <section class="player-section" data-name="Sachin Tendulkar" id="sachin">
+    <div class="overlay-sachin"></div>
+    <div class="content">
+        <h2 class="name-sachin">Sachin Tendulkar</h2>
+        <p class="tagline">The God of Cricket | 100 International Centuries</p>
+        <div class="stats-grid">
+            <div class="stat-card"><h3>18,426</h3><p>ODI Runs</p></div>
+            <div class="stat-card"><h3>15,921</h3><p>Test Runs</p></div>
+            <div class="stat-card"><h3>51</h3><p>Test Tons</p></div>
+            <div class="stat-card"><h3>2016</h3><p>Fours (ODI)</p></div>
+        </div>
+        <canvas id="chart-Sachin"></canvas>
+        <button class="btn-compare" onclick="analyzePerformance('Sachin Tendulkar', 'chart-Sachin')">Analyze Performance</button>
+    </div>
+</section>
+
+<section class="player-section" data-name="Hardik Pandya" id="hardik">
+    <div class="overlay-hardik"></div>
+    <div class="content">
+        <h2 class="name-hardik">Hardik Pandya</h2>
+        <p class="tagline">The Powerhouse | 2024 T20 WC Hero</p>
+        <div class="stats-grid">
+            <div class="stat-card"><h3>186.8</h3><p>T20I SR</p></div>
+            <div class="stat-card"><h3>100+</h3><p>T20I Wickets</p></div>
+            <div class="stat-card"><h3>4</h3><p>IPL Titles</p></div>
+            <div class="stat-card"><h3>31.2</h3><p>Batting Avg</p></div>
+        </div>
+        <canvas id="chart-Hardik"></canvas>
+        <button class="btn-compare" onclick="analyzePerformance('Hardik Pandya', 'chart-Hardik')">Analyze Performance</button>
+    </div>
+</section>
+
+<section id="comparison-zone" class="player-section" data-name="Comparison">
+    <h4 class="reveal-text">Statistical Showdown</h4>
+    <p>Select two players to compare their career metrics</p>
+    
+    <div id="comparison-result"></div>
+
+    <div class="comparison-selectors">
+        <select id="player1" class="search-input">
+            <option value="Virat Kohli">Virat Kohli</option>
+            <option value="Rohit Sharma">Rohit Sharma</option>
+            <option value="Sachin Tendulkar">Sachin Tendulkar</option>
+            <option value="Smriti Mandhana">Smriti Mandhana</option>
+        </select>
+        
+        <span class="vs-badge">VS</span>
+        
+        <select id="player2" class="search-input">
+            <option value="Rohit Sharma">Rohit Sharma</option>
+            <option value="Virat Kohli">Virat Kohli</option>
+            <option value="Hardik Pandya">Hardik Pandya</option>
+            <option value="Harmanpreet Kaur">Harmanpreet Kaur</option>
+        </select>
+    </div>
+
+    <button class="btn-compare" onclick="runComparison()">Compare Stats</button>
+    
+    <div class="chart-container" style="height: 400px; width: 100%;">
+        <canvas id="comparisonChart"></canvas>
+    </div>
+</section>
+<footer id="foot">
+    <div class="footer-content">
+        <div class="footer-logo">PERFORMANCE<span>METRICS</span></div>
+        <p class="footer-tagline">Advanced Sports Analytics & Statistical Modeling</p>
+        
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#playerGrid">Player Registry</a>
+            <a href="#comparison-zone">Analytics Lab</a>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Sports Analytics Portal | Project: Performance Evaluation of Athletes</p>
+            <p class="syllabus-note">Bivariate Analysis & Data Visualization Module</p>
+        </div>
+        
+        <a href="#" class="scroll-top">↑ Back to Top</a>
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

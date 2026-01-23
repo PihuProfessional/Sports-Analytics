@@ -1,0 +1,96 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cricket Player Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(120deg, #e0eafc, #cfdef3);
+        }
+        header {
+            background: #1e3c72;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 26px;
+            font-weight: bold;
+        }
+        .container { max-width: 1100px; margin: 30px auto; padding: 20px; }
+        .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .card h2 { margin-top: 0; color: #1e3c72; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; }
+        input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 15px; }
+        small { color: #666; }
+        button { margin-top: 15px; padding: 12px; width: 100%; border: none; border-radius: 8px; background: #1e3c72; color: white; font-size: 16px; cursor: pointer; }
+        button:hover { background: #16335a; }
+        .chart-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-top: 20px; }
+
+        .history-card { background: white; border-radius: 12px; padding: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-top: 20px; }
+        .history-card table { width: 100%; border-collapse: collapse; }
+        .history-card th, .history-card td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        .history-card th { background: #1e3c72; color: white; font-weight: bold; }
+        .history-card tr:hover { background: #f0f0f0; cursor: pointer; }
+
+        footer { text-align: center; padding: 15px; color: #444; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<header>🏏 Cricket Player Performance Dashboard</header>
+
+<div class="container">
+
+    <div class="card">
+        <h2>Create / Edit Player History</h2>
+        <div class="form-group">
+            <label>Player Name</label>
+            <input type="text" id="playerName" placeholder="e.g. Virat Kohli">
+        </div>
+        <div class="form-group">
+            <label>Years</label>
+            <input type="text" id="yearsInput" placeholder="2018,2019,2020,2021">
+            <small>Comma separated years</small>
+        </div>
+        <div class="form-group">
+            <label>Total Runs (per year)</label>
+            <input type="text" id="runsInput" placeholder="1200,1450,1850,1700">
+        </div>
+        <div class="form-group">
+            <label>Highest Score (per year)</label>
+            <input type="text" id="highestInput" placeholder="120,140,150,183">
+        </div>
+        <button onclick="savePlayerData()">Save & Generate Graph</button>
+    </div>
+
+    <div class="history-card">
+        <h3>Player History</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Player</th>
+                    <th>Years</th>
+                    <th>Runs</th>
+                    <th>Highest Scores</th>
+                </tr>
+            </thead>
+            <tbody id="historyTableBody">
+                <!-- History rows will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="chart-card">
+        <canvas id="statsChart"></canvas>
+    </div>
+
+</div>
+
+<footer>Mini Project | Cricket Player History Visualization</footer>
+
+<script src="rr.js"></script>
+</body>
+</html>

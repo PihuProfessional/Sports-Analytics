@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏏 Cricket Sports Science Dashboard</title>
+    <link rel="stylesheet" href="sportsci.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Background Slider -->
+    <div class="slider">
+      <img class="slide" src="cricket1.jpeg">
+      <img class="slide" src="cricket2.jpeg">
+      <img class="slide" src="cricket3.jpg">
+      <img class="slide" src="cricket4.jpg">
+      <img class="slide" src="cricket5.jpg">
+      <img class="slide" src="cricket6.jpg">
+    </div>
+
+    <div class="dashboard">
+        <header class="header">
+            <h1>🏏 Cricket Sports Science Dashboard</h1>
+            <p>Statistical Fundamentals & Performance Analytics</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Quick Actions -->
+            <section class="section quick-actions">
+                <h2>⚡ Quick Actions</h2>
+                <div class="action-buttons">
+                    <button onclick="openAddPlayerModal()" class="btn btn-primary">➕ Add New Athlete</button>
+                    <button onclick="openCompareModal()" class="btn btn-primary">📊 Compare Athletes</button>
+                    <button onclick="exportToCSV()" class="btn btn-secondary">📊 Export CSV</button>
+                    <button onclick="clearAllData()" class="btn btn-danger">🗑️ Clear All Data</button>
+                    <button onclick="loadSampleData()" class="btn btn-info">📋 Load Sample Data</button>
+                </div>
+            </section>
+
+            <!-- Add Player Modal -->
+            <div id="addPlayerModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>➕ Add New Athlete</h2>
+                        <span class="close" onclick="closeAddPlayerModal()">&times;</span>
+                    </div>
+                    <form id="addPlayerForm" class="form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="playerName">Athlete Name</label>
+                                <input type="text" id="playerName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="position">Position</label>
+                                <select id="position" required>
+                                    <option value="">Select Position</option>
+                                    <option value="Batsman">Batsman</option>
+                                    <option value="Bowler">Bowler</option>
+                                    <option value="All-rounder">All-rounder</option>
+                                    <option value="Wicket-keeper">Wicket-keeper</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="stamina">Stamina (0-100)</label>
+                                <input type="number" id="stamina" min="0" max="100" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="battingPower">Batting Power (0-100)</label>
+                                <input type="number" id="battingPower" min="0" max="100" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bowlingSpeed">Bowling Speed (0-100)</label>
+                                <input type="number" id="bowlingSpeed" min="0" max="100" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="trainingHours">Training Hours/Week</label>
+                                <input type="number" id="trainingHours" min="0" max="50" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="fatigueLevel">Fatigue Level (0-100)</label>
+                                <input type="number" id="fatigueLevel" min="0" max="100" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="recoveryHours">Recovery Hours/Day</label>
+                                <input type="number" id="recoveryHours" min="0" max="24" step="0.5" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="previousInjuries">Previous Injuries</label>
+                                <input type="number" id="previousInjuries" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="trainingPhase">Training Phase</label>
+                                <select id="trainingPhase" required>
+                                    <option value="">Select Phase</option>
+                                    <option value="Pre-season">Pre-season</option>
+                                    <option value="In-season">In-season</option>
+                                    <option value="Recovery">Recovery</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="trainingIntensity">Training Intensity</label>
+                                <select id="trainingIntensity" required>
+                                    <option value="">Select Intensity</option>
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Add Athlete</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Compare Athletes Modal -->
+            <div id="compareModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>📊 Compare Athletes</h2>
+                        <span class="close" onclick="closeCompareModal()">&times;</span>
+                    </div>
+                    <div class="compare-content">
+                        <!-- Athlete Selection -->
+                        <div class="athlete-selection">
+                            <h3>Select Athletes to Compare</h3>
+                            <div class="selected-athletes" id="selectedAthletes">
+                                <div class="no-selection">Select 2 or more athletes to compare</div>
+                            </div>
+                            <div class="available-athletes" id="availableAthletes">
+                                <!-- Will be populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Comparison Results -->
+                        <div class="comparison-results" id="comparisonResults" style="display: none;">
+                            <div class="comparison-tabs">
+                                <button class="tab-btn active" onclick="showComparisonTab('overview')">Overview</button>
+                                <button class="tab-btn" onclick="showComparisonTab('performance')">Performance</button>
+                                <button class="tab-btn" onclick="showComparisonTab('health')">Health & Medical</button>
+                                <button class="tab-btn" onclick="showComparisonTab('training')">Training Analysis</button>
+                                <button class="tab-btn" onclick="showComparisonTab('recommendations')">Recommendations</button>
+                            </div>
+
+                            <!-- Overview Tab -->
+                            <div class="tab-content active" id="overviewTab">
+                                <div class="comparison-charts">
+                                    <div class="chart-container">
+                                        <h3>Overall Performance Comparison</h3>
+                                        <canvas id="comparePerformanceChart"></canvas>
+                                    </div>
+                                    <div class="chart-container">
+                                        <h3>Key Metrics Radar</h3>
+                                        <canvas id="compareRadarChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Performance Tab -->
+                            <div class="tab-content" id="performanceTab">
+                                <div class="performance-comparison">
+                                    <div class="chart-container">
+                                        <h3>Performance Metrics</h3>
+                                        <canvas id="comparePerformanceMetricsChart"></canvas>
+                                    </div>
+                                    <div class="performance-analysis" id="performanceAnalysis">
+                                        <!-- Will be populated dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Health Tab -->
+                            <div class="tab-content" id="healthTab">
+                                <div class="health-comparison">
+                                    <div class="chart-container">
+                                        <h3>Health & Risk Analysis</h3>
+                                        <canvas id="compareHealthChart"></canvas>
+                                    </div>
+                                    <div class="health-analysis" id="healthAnalysis">
+                                        <!-- Will be populated dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Training Tab -->
+                            <div class="tab-content" id="trainingTab">
+                                <div class="training-comparison">
+                                    <div class="chart-container">
+                                        <h3>Training Load & Efficiency</h3>
+                                        <canvas id="compareTrainingChart"></canvas>
+                                    </div>
+                                    <div class="training-analysis" id="trainingAnalysis">
+                                        <!-- Will be populated dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Recommendations Tab -->
+                            <div class="tab-content" id="recommendationsTab">
+                                <div class="recommendations-comparison" id="recommendationsComparison">
+                                    <!-- Will be populated dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Overview -->
+            <section class="section team-overview">
+                <h2>📈 Team Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Players</h3>
+                        <p id="totalPlayers" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Average Performance</h3>
+                        <p id="avgPerformance" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Training Efficiency</h3>
+                        <p id="trainingEfficiency" class="stat-value">0%</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Injury Risk Average</h3>
+                        <p id="avgInjuryRisk" class="stat-value">Low</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Player Table -->
+            <section class="section player-table-section">
+                <h2>👥 Player Data Table</h2>
+                <div class="table-container">
+                    <table id="playerTable" class="player-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Performance Score</th>
+                                <th>Fitness Level</th>
+                                <th>Injury Risk</th>
+                                <th>Medical Status</th>
+                                <th>Training Phase</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="playerTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="section charts-section">
+                <h2>📊 Data Visualizations</h2>
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h3>Performance Distribution (Histogram)</h3>
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>Training Load vs Performance</h3>
+                        <canvas id="trainingChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Individual Athlete Cards -->
+            <section class="section athlete-cards-section">
+                <h2>🎯 Individual Athlete Performance Cards</h2>
+                <div class="athlete-cards-grid" id="athleteCardsGrid">
+                    <div class="empty-state">
+                        <h3>No athletes added yet</h3>
+                        <p>Add athletes using the "➕ Add New Athlete" button or click "📋 Load Sample Data" to see examples</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Team Summary & Conclusions -->
+            <section class="section team-summary-section">
+                <h2>📋 Team Summary & Conclusions</h2>
+                <div class="summary-grid" id="summaryGrid">
+                    <!-- Will be populated dynamically -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="sportsci.js"></script>
+</body>
+</html>

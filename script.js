@@ -23,12 +23,12 @@ function filterPlayers() {
 }
 // PART 1: The Data Bank (Quantitative Variables)
 const playerRegistry = {
-    "Rohit Sharma": { labels: ['ODI Runs', 'T20 Wins', 'ODI 100s', 'T20 SR'], data: [11500, 49, 31, 140.8], color: '#3498db' },
-    "Smriti Mandhana": { labels: ['Intl Runs', 'T20 Caps', 'ODI Avg', 'Best T20'], data: [10000, 150, 48.4, 112], color: '#e74c3c' },
-    "Harmanpreet Kaur": { labels: ['Intl Runs', 'T20 Wins', 'WC Score', 'WPL Titles'], data: [8000, 78, 171, 2], color: '#2ecc71' },
-    "Virat Kohli": { labels: ['Centuries', 'ODI Tons', 'Average', 'Strike Rate'], data: [84, 53, 58.7, 93.5], color: '#f1c40f' },
-    "Sachin Tendulkar": { labels: ['ODI Runs', 'Test Runs', 'Test Tons', 'ODI Fours'], data: [18426, 15921, 51, 2016], color: '#9b59b6' },
-    "Hardik Pandya": { labels: ['T20I SR', 'T20I Wickets', 'IPL Titles', 'Batting Avg'], data: [186.8, 100, 4, 31.2], color: '#e67e22' }
+    "Rohit Sharma": { labels: ['Intl Runs', 'Intl Tons', 'T20I SR', 'Total Matches'], data: [20109, 50, 140,508], color: '#3498db' },
+    "Smriti Mandhana": { labels: ['Intl Runs', 'Intl Tons', 'WT20I SR', 'Total Matches'], data: [10053, 17,122.4,281], color: '#e74c3c' },
+    "Harmanpreet Kaur": { labels: ['Intl Runs', 'Intl Tons', 'WT20I SR', 'Total Matches'], data: [8278, 9, 110.5, 350], color: '#2ecc71' },
+    "Virat Kohli": { labels: ['Intl Runs', 'Intl Tons', 'Strike Rate', 'Total Matches'], data: [27000, 85, 137.04, 311], color: '#f1c40f' },
+    "Sachin Tendulkar": { labels: ['Intl Runs', 'Intl Tons', 'ODI SR', 'Total Matches'], data: [34357, 100,86.2,664], color: '#9b59b6' },
+    "MS Dhoni": { labels: ['Intl Runs', 'Intl Tons', 'T20I SR', 'Total Matches'], data: [17266, 16, 126.7, 538], color: '#e67e22' }
 };
 function analyzePerformance(playerName, canvasId) {
     const canvas = document.getElementById(canvasId);
@@ -103,7 +103,7 @@ function runComparison() {
     window.comparisonChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Total Runs', 'Format Wins', 'High Score', 'Avg/SR'],
+            labels: ['Total Runs', 'Total Tons', 'Strikke Rate', 'Total Matches'],
             datasets: [
                 {
                     label: p1Name,

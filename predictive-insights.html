@@ -1,85 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sports Analytics Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match Forecaster - Logistic Modeling</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* --- DARK THEME CORE --- */
+        body { background-color: #050505; color: white; font-family: 'Montserrat', sans-serif; margin: 0; overflow-x: hidden; }
+        .dashboard-container { max-width: 1200px; margin: 50px auto; padding: 30px; }
+        
+        .page-header { border-bottom: 2px solid #00cccc; padding-bottom: 20px; margin-bottom: 40px; text-align: center; }
+        .page-header h1 { font-family: 'Oswald', sans-serif; font-size: 45px; margin: 0; text-transform: uppercase; }
+        .page-header p { color: #888; margin-top: 5px; font-size: 14px; }
+        .cyan { color: #00cccc; }
 
-<style>
-  /* --- GLOBAL STYLES (DO NOT CHANGE) --- */
-  body, html {
-    margin: 0;
-    padding: 0;
-    font-family: 'Montserrat', sans-serif;
-    background-color: #0b0b0b; /* Standard Dark Grey Background */
-    color: white;
-  }
+        /* --- LAYOUT --- */
+        .prediction-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .panel { background: #111; padding: 30px; border-radius: 8px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .panel h3 { color: #00cccc; font-family: 'Oswald', sans-serif; margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px; }
 
-  /* --- NAVIGATION BAR (Standard) --- */
-  .nav-bar {
-    padding: 20px;
-    background: rgba(255,255,255,0.05); /* Subtle background for nav */
-  }
+        /* --- INPUTS --- */
+        .form-group { margin-bottom: 20px; }
+        label { color: #888; font-size: 12px; font-weight: bold; display: block; margin-bottom: 8px; text-transform: uppercase; }
+        select { width: 100%; padding: 12px; background: #222; border: 1px solid #444; color: white; border-radius: 4px; outline: none; font-family: 'Montserrat', sans-serif; }
+        select:focus { border-color: #00cccc; }
 
-  .back-btn {
-    text-decoration: none;
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    transition: color 0.3s;
-  }
+        .btn-predict { width: 100%; padding: 15px; background: #00cccc; color: black; font-weight: bold; font-family: 'Oswald', sans-serif; cursor: pointer; border: none; font-size: 18px; text-transform: uppercase; transition: 0.3s; margin-top: 10px; }
+        .btn-predict:hover { background: white; box-shadow: 0 0 15px #00cccc; }
 
-  .back-btn i { margin-right: 10px; }
-  .back-btn:hover { color: #00cccc; } /* Standard Teal Hover */
+        /* --- MATH EXPLANATION BOX --- */
+        .math-box { background: rgba(0, 204, 204, 0.05); border-left: 3px solid #00cccc; padding: 15px; margin-top: 25px; font-family: 'Courier New', monospace; font-size: 12px; color: #ccc; line-height: 1.6; }
+        .math-box strong { color: white; font-family: 'Montserrat', sans-serif; }
 
-  /* --- CONTENT AREA (Teammate: Work inside here) --- */
-  .container {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 20px;
-    text-align: center;
-  }
-
-  h1 {
-    font-size: 50px;
-    text-transform: uppercase;
-    color: #00cccc; /* Teal Title */
-    margin-bottom: 20px;
-  }
-
-  p {
-    font-size: 18px;
-    line-height: 1.6;
-    color: #ddd;
-  }
-
-  /* Add your own custom CSS below this line */
-
-</style>
+        /* --- OUTPUT STYLES --- */
+        .win-percentage { font-size: 80px; color: #00cccc; font-family: 'Oswald', sans-serif; text-align: center; line-height: 1; margin: 10px 0; text-shadow: 0 0 20px rgba(0,204,204,0.3); }
+        .win-label { text-align: center; color: #888; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; }
+        .winner-name { text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 20px; color: white; }
+        
+        .factors-box { margin-top: 20px; border-top: 1px solid #333; padding-top: 20px; font-size: 14px; color: #ccc; line-height: 1.8; }
+        .chart-container { position: relative; height: 250px; width: 100%; margin-top: 20px; }
+    </style>
 </head>
 <body>
 
-<div class="nav-bar">
-  <a href="index.html" class="back-btn">
-    <i class="fas fa-arrow-left"></i> Back to Home
-  </a>
+<nav class="navbar">
+    <div class="logo">MATCH<span class="cyan">FORECASTER</span></div>
+    <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="team_comp.html">Compare</a></li>
+        <li><a href="sport-science.html">Sport Science</a></li>
+    </ul>
+</nav>
+
+<div class="dashboard-container">
+    <div class="page-header">
+        <h1>PREDICTIVE <span class="cyan">INSIGHTS</span></h1>
+        <p>Logistic Distribution & Elo Rating Probability Models</p>
+    </div>
+
+    <div class="prediction-grid">
+        
+        <div class="panel">
+            <h3><i class="fas fa-sliders-h"></i> Simulation Parameters</h3>
+            
+            <div class="form-group">
+                <label>Team A (Home Advantage +50 Elo)</label>
+                <select id="teamA">
+                    <option value="India">India (Elo: 1250)</option>
+                    <option value="Australia">Australia (Elo: 1220)</option>
+                    <option value="England">England (Elo: 1180)</option>
+                    <option value="NewZealand">New Zealand (Elo: 1160)</option>
+                    <option value="SouthAfrica">South Africa (Elo: 1150)</option>
+                    <option value="Pakistan">Pakistan (Elo: 1140)</option>
+                    <option value="SriLanka">Sri Lanka (Elo: 1080)</option>
+                    <option value="WestIndies">West Indies (Elo: 1050)</option>
+                    <option value="Bangladesh">Bangladesh (Elo: 1020)</option>
+                    <option value="Afghanistan">Afghanistan (Elo: 1000)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Team B (Away)</label>
+                <select id="teamB">
+                    <option value="Australia">Australia (Elo: 1220)</option>
+                    <option value="India">India (Elo: 1250)</option>
+                    <option value="England">England (Elo: 1180)</option>
+                    <option value="NewZealand">New Zealand (Elo: 1160)</option>
+                    <option value="SouthAfrica">South Africa (Elo: 1150)</option>
+                    <option value="Pakistan">Pakistan (Elo: 1140)</option>
+                    <option value="SriLanka">Sri Lanka (Elo: 1080)</option>
+                    <option value="WestIndies">West Indies (Elo: 1050)</option>
+                    <option value="Bangladesh">Bangladesh (Elo: 1020)</option>
+                    <option value="Afghanistan">Afghanistan (Elo: 1000)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Environmental Variable (Pitch)</label>
+                <select id="pitch">
+                    <option value="dusty">Dusty / Dry (Spin Variance Δ = ±30)</option>
+                    <option value="green">Green Top (Pace Variance Δ = ±30)</option>
+                    <option value="flat">Flat Track (Neutral Δ = 0)</option>
+                </select>
+            </div>
+
+            <button class="btn-predict" onclick="runLogisticSimulation()">Compute Probability Matrix</button>
+
+            <div class="math-box">
+                <strong>Logistic Probability Function (Elo)</strong><br>
+                P(A) = 1 / (1 + 10^((R_B - R_A) / 400))<br><br>
+                <em>Where R_A is Team A's adjusted Elo rating, incorporating Home Advantage (H) and Environmental Variance (Δ).</em>
+            </div>
+        </div>
+
+        <div class="panel" id="resultBox" style="display:none; display: flex; flex-direction: column; justify-content: center;">
+            <div class="win-label">CALCULATED P(A)</div>
+            <div class="win-percentage" id="winText">0%</div>
+            <div class="winner-name" id="winnerName">-</div>
+            
+            <div class="chart-container">
+                <canvas id="probChart"></canvas>
+            </div>
+
+            <div class="factors-box">
+                <div><i class="fas fa-square-root-alt" style="color:#00cccc"></i> <b>Adjusted Rating A (R_A):</b> <span id="ratingA"></span></div>
+                <div><i class="fas fa-square-root-alt" style="color:#ff4444"></i> <b>Adjusted Rating B (R_B):</b> <span id="ratingB"></span></div>
+                <div style="margin-top:10px;"><i class="fas fa-info-circle" style="color:#888"></i> <span id="mathLog" style="color:#aaa; font-size:12px;"></span></div>
+            </div>
+        </div>
+
+    </div>
 </div>
 
-<div class="container">
-  
-  <h1>Predictive insights</h1>
+<script>
+    // --- 1. MATHEMATICAL CONSTANTS (Base Elo Ratings) ---
+    const teamBaseElo = {
+        "India": { elo: 1250, spinPower: 95, pacePower: 85 },
+        "Australia": { elo: 1220, spinPower: 75, pacePower: 95 },
+        "England": { elo: 1180, spinPower: 70, pacePower: 85 },
+        "NewZealand": { elo: 1160, spinPower: 70, pacePower: 85 },
+        "SouthAfrica": { elo: 1150, spinPower: 65, pacePower: 90 },
+        "Pakistan": { elo: 1140, spinPower: 80, pacePower: 90 },
+        "SriLanka": { elo: 1080, spinPower: 85, pacePower: 65 },
+        "WestIndies": { elo: 1050, spinPower: 65, pacePower: 85 },
+        "Bangladesh": { elo: 1020, spinPower: 85, pacePower: 60 },
+        "Afghanistan": { elo: 1000, spinPower: 90, pacePower: 65 }
+    };
 
-  <div style="border: 2px dashed #555; padding: 40px; margin-top: 20px; border-radius: 10px;">
-    <p>🚧 <strong>Work in Progress</strong> 🚧</p>
-    <p>Teammate: Delete this box and add your graphs, text, or images here.</p>
-  </div>
+    let probChart = null;
 
-</div>
+    function runLogisticSimulation() {
+        // --- 2. GET VARIABLES ---
+        const teamA = document.getElementById("teamA").value;
+        const teamB = document.getElementById("teamB").value;
+        const pitch = document.getElementById("pitch").value;
 
+        // Display Names (Adding spaces back in for presentation)
+        const nameA = teamA.replace(/([A-Z])/g, ' $1').trim();
+        const nameB = teamB.replace(/([A-Z])/g, ' $1').trim();
+
+        if(teamA === teamB) { alert("Mathematical Error: Cannot compare identical data sets."); return; }
+
+        let Ra = teamBaseElo[teamA].elo;
+        let Rb = teamBaseElo[teamB].elo;
+        let logMessage = "";
+
+        // --- 3. APPLY ALGEBRAIC MODIFIERS (Δ) ---
+        // Home Advantage (H)
+        Ra += 50; 
+        logMessage += "Applied +50 Home Advantage to " + nameA + ". ";
+
+        // Environmental Variance (Pitch)
+        if (pitch === "dusty") {
+            if (teamBaseElo[teamA].spinPower > teamBaseElo[teamB].spinPower) {
+                Ra += 30; logMessage += "Applied +30 Spin Variance to R_A. ";
+            } else {
+                Rb += 30; logMessage += "Applied +30 Spin Variance to R_B. ";
+            }
+        } else if (pitch === "green") {
+            if (teamBaseElo[teamA].pacePower > teamBaseElo[teamB].pacePower) {
+                Ra += 30; logMessage += "Applied +30 Pace Variance to R_A. ";
+            } else {
+                Rb += 30; logMessage += "Applied +30 Pace Variance to R_B. ";
+            }
+        } else {
+            logMessage += "Neutral Pitch (Δ = 0).";
+        }
+
+        // --- 4. THE LOGISTIC PROBABILITY FORMULA ---
+        // P(A) = 1 / (1 + 10^((Rb - Ra) / 400))
+        const exponent = (Rb - Ra) / 400;
+        const probabilityA = 1 / (1 + Math.pow(10, exponent));
+        const percentA = (probabilityA * 100).toFixed(1);
+        const percentB = (100 - percentA).toFixed(1);
+
+        // --- 5. UPDATE UI ---
+        document.getElementById("resultBox").style.display = "flex";
+        document.getElementById("winText").innerText = percentA + "%";
+        
+        if (probabilityA > 0.5) {
+            document.getElementById("winnerName").innerText = "Highest Probability: " + nameA;
+        } else {
+            document.getElementById("winnerName").innerText = "Highest Probability: " + nameB;
+        }
+
+        document.getElementById("ratingA").innerText = Ra;
+        document.getElementById("ratingB").innerText = Rb;
+        document.getElementById("mathLog").innerText = logMessage;
+
+        // --- 6. RENDER CHART ---
+        updateChart(nameA, percentA, nameB, percentB);
+    }
+
+    function updateChart(labelA, dataA, labelB, dataB) {
+        const ctx = document.getElementById('probChart').getContext('2d');
+        
+        if (probChart) { probChart.destroy(); } // Clear old chart
+
+        probChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: [labelA + ' P(A)', labelB + ' P(B)'],
+                datasets: [{
+                    data: [dataA, dataB],
+                    backgroundColor: ['#00cccc', '#ff4444'],
+                    borderColor: '#111',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '75%',
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#ccc' } }
+                }
+            }
+        });
+    }
+</script>
 </body>
 </html>

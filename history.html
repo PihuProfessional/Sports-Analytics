@@ -1,198 +1,240 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Cricket Player Stats</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Player Archive - Statistical History</title>
 
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Oswald:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #eef1f5;
-        }
+<style>
+  /* --- DARK THEME CORE --- */
+  body { background-color: #050505; color: white; font-family: 'Montserrat', sans-serif; margin: 0; overflow-x: hidden; }
+  .cyan { color: #00cccc; }
 
-        header {
-            background: #1e3c72;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            font-size: 24px;
-        }
+  .dashboard-container { max-width: 1200px; margin: 50px auto; padding: 20px; }
 
-        .container {
-            width: 90%;
-            max-width: 1100px;
-            margin: 30px auto;
-        }
+  /* SEARCH AREA */
+  .search-section { text-align: center; margin-bottom: 40px; }
+  .search-section h2 { color: white; margin-bottom: 20px; font-family: 'Oswald', sans-serif; font-size: 40px; text-transform: uppercase; }
+  .player-select {
+      padding: 15px; width: 350px; background: #111; color: white;
+      border: 1px solid #00cccc; border-radius: 4px; font-size: 16px;
+      font-family: 'Montserrat', sans-serif; text-align: center; cursor: pointer;
+      outline: none; box-shadow: 0 0 15px rgba(0,204,204,0.2);
+  }
 
-        .search-box {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
+  /* EMPTY STATE */
+  .empty-state { text-align: center; color: #555; margin-top: 100px; }
+  .empty-state i { font-size: 60px; margin-bottom: 20px; color: #333; }
 
-        input {
-            padding: 10px;
-            width: 250px;
-            font-size: 16px;
-        }
+  /* PROFILE CARD */
+  .profile-card {
+      background: #111; border: 1px solid #333; border-radius: 8px;
+      overflow: hidden; display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+      animation: slideUp 0.5s ease;
+  }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        button {
-            padding: 10px 18px;
-            font-size: 16px;
-            margin-left: 10px;
-            background: #1e3c72;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
+  /* HEADER */
+  .profile-header {
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+      padding: 40px; text-align: center; border-bottom: 4px solid #00cccc;
+  }
+  .p-name { font-size: 50px; font-family: 'Oswald', sans-serif; color: white; margin: 0; text-transform: uppercase; }
+  .p-country { color: #888; font-size: 18px; text-transform: uppercase; letter-spacing: 2px; margin-top: 5px; font-weight: bold; }
 
-        button:hover {
-            background: #16335a;
-        }
+  /* GRID LAYOUT */
+  .profile-content { padding: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  
+  .section-title { color: #00cccc; margin-bottom: 20px; font-size: 24px; font-family: 'Oswald', sans-serif; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 10px; }
 
-        .player-section {
-            display: none;
-            margin-top: 30px;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
+  /* STATS GRID */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+  .info-item { background: #0a0a0a; padding: 20px; border-radius: 4px; border: 1px solid #222; border-left: 3px solid #00cccc; }
+  .info-label { color: #888; font-size: 11px; text-transform: uppercase; font-weight: bold; }
+  .info-val { color: white; font-size: 24px; font-weight: bold; margin-top: 5px; font-family: 'Oswald', sans-serif; }
 
-        .player-info {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
+  /* MATH BOX */
+  .math-box { background: rgba(0, 204, 204, 0.05); border-left: 3px solid #00cccc; padding: 20px; font-family: 'Courier New', monospace; font-size: 13px; color: #ccc; line-height: 1.6; margin-top: 20px; }
+  .math-box strong { color: white; font-family: 'Montserrat', sans-serif; font-size: 14px; }
+  
+  /* CHART */
+  .chart-container { background: #0a0a0a; padding: 20px; border-radius: 4px; border: 1px solid #222; height: 300px; margin-top: 20px; }
 
-        .info-box {
-            width: 30%;
-            min-width: 200px;
-            margin-bottom: 15px;
-            background: #f7f9fc;
-            padding: 15px;
-            border-radius: 6px;
-            text-align: center;
-        }
-
-        .chart-box {
-            margin-top: 30px;
-        }
-    </style>
+  .btn-back { display: inline-block; color: #888; text-decoration: none; font-size: 14px; border: 1px solid #333; padding: 10px 20px; border-radius: 4px; transition: 0.3s; margin-top: 30px; text-transform: uppercase; font-family: 'Oswald', sans-serif; }
+  .btn-back:hover { color: black; background: #00cccc; border-color: #00cccc; }
+  
+</style>
 </head>
+
 <body>
 
-<header>🏏 Cricket Player Statistics</header>
+<nav class="navbar">
+    <div class="logo">PLAYER<span class="cyan">HISTORY</span></div>
+    <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="predictive-insights.html">Forecaster</a></li>
+    </ul>
+</nav>
 
-<div class="container">
+<div class="dashboard-container">
 
-    <div class="search-box">
-        <input type="text" id="playerName" placeholder="Enter Player Name">
-        <button onclick="loadPlayer()">Search</button>
+    <div class="search-section">
+        <h2>STATISTICAL <span class="cyan">ARCHIVE</span></h2>
+        <select id="playerSelector" class="player-select" onchange="loadProfile()">
+            <option value="">-- Initialize Player Vector --</option>
+        </select>
     </div>
 
-    <div id="playerSection" class="player-section">
+    <div id="emptyState" class="empty-state">
+        <i class="fas fa-database"></i>
+        <h3>Select a player variable to compute historical reliability.</h3>
+    </div>
 
-        <h2 id="playerTitle"></h2>
-
-        <div class="player-info">
-            <div class="info-box">
-                <strong>Total Matches</strong>
-                <p id="matches"></p>
-            </div>
-            <div class="info-box">
-                <strong>Total Runs</strong>
-                <p id="runs"></p>
-            </div>
-            <div class="info-box">
-                <strong>Highest Score</strong>
-                <p id="highest"></p>
-            </div>
+    <div id="profileCard" class="profile-card">
+        <div class="profile-header">
+            <h1 class="p-name" id="pName">Name</h1>
+            <p class="p-country" id="pCountry">Country</p>
         </div>
 
-        <div class="chart-box">
-            <canvas id="statsChart"></canvas>
-        </div>
+        <div class="profile-content">
+            <div>
+                <h3 class="section-title"><i class="fas fa-chart-line"></i> Raw Base Metrics</h3>
+                <div class="info-grid">
+                    <div class="info-item"><div class="info-label">Sample Size (n matches)</div><div class="info-val" id="pMatches">-</div></div>
+                    <div class="info-item"><div class="info-label">Total Volume (Σ runs)</div><div class="info-val" id="pRuns">-</div></div>
+                    <div class="info-item"><div class="info-label">Mean (μ avg)</div><div class="info-val" id="pAvg">-</div></div>
+                    <div class="info-item"><div class="info-label">Standard Deviation (σ)</div><div class="info-val" id="pSD">-</div></div>
+                </div>
 
+                <div class="math-box">
+                    <strong>1. 95% Confidence Interval (CI)</strong><br>
+                    CI = μ ± (1.96 * (σ / √n))<br>
+                    <em>Determines the true mathematical range of the player's average with 95% statistical certainty.</em><br><br>
+                    
+                    <strong>2. Coefficient of Variation (CV)</strong><br>
+                    CV = (σ / μ) * 100<br>
+                    <em>Measures relative volatility. Lower % = Higher Consistency.</em>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="section-title"><i class="fas fa-square-root-alt"></i> Inferential Computations</h3>
+                <div class="info-grid" style="grid-template-columns: 1fr;">
+                    <div class="info-item" style="border-left-color: #00ff88;">
+                        <div class="info-label">95% Confidence Bound (True Average Range)</div>
+                        <div class="info-val" id="pCI" style="color: #00ff88;">-</div>
+                    </div>
+                    <div class="info-item" style="border-left-color: #ffcc00;">
+                        <div class="info-label">Consistency Index (CV)</div>
+                        <div class="info-val" id="pCV" style="color: #ffcc00;">-</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="historyChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; padding-bottom: 40px;">
+            <a href="index.html" class="btn-back">Return to Root Directory</a>
+        </div>
     </div>
 
 </div>
 
 <script>
-    const players = {
-        "virat kohli": {
-            matches: 500,
-            totalRuns: 26000,
-            highest: 254,
-            years: ["2012", "2014", "2016", "2018", "2020", "2022", "2024"],
-            runs: [1200, 1500, 1800, 2100, 1100, 1400, 1600]
-        },
-        "ms dhoni": {
-            matches: 538,
-            totalRuns: 17266,
-            highest: 224,
-            years: ["2006", "2008", "2010", "2012", "2014", "2016", "2018"],
-            runs: [900, 1100, 1300, 1400, 1200, 900, 700]
-        },
-        "sachin tendulkar": {
-            matches: 664,
-            totalRuns: 34357,
-            highest: 248,
-            years: ["1996", "1999", "2002", "2005", "2008", "2010", "2012"],
-            runs: [1100, 1400, 1600, 1800, 1700, 1900, 1500]
+    // 1. EMBEDDED MATHEMATICAL DATABASE 
+    // Includes standard deviation (sd) to allow for advanced variance calculations
+    const archiveDB = {
+        "Virat Kohli": { country: "India", matches: 311, runs: 27000, avg: 58.1, sd: 22.4 },
+        "Rohit Sharma": { country: "India", matches: 508, runs: 20109, avg: 49.0, sd: 28.5 },
+        "Steve Smith": { country: "Australia", matches: 340, runs: 16000, avg: 57.5, sd: 18.2 },
+        "Kane Williamson": { country: "New Zealand", matches: 350, runs: 18000, avg: 54.8, sd: 19.1 },
+        "Joe Root": { country: "England", matches: 345, runs: 19500, avg: 50.2, sd: 21.0 }
+    };
+
+    let histChart = null;
+
+    // 2. INITIALIZE DROPDOWN
+    window.onload = function() {
+        const sel = document.getElementById("playerSelector");
+        for (let player in archiveDB) {
+            sel.add(new Option(player, player));
         }
     };
 
-    let chart;
+    // 3. COMPUTE MATHEMATICS & LOAD PROFILE
+    function loadProfile() {
+        const name = document.getElementById("playerSelector").value;
+        const card = document.getElementById("profileCard");
+        const empty = document.getElementById("emptyState");
 
-    function loadPlayer() {
-        const name = document.getElementById("playerName").value.toLowerCase();
-        const data = players[name];
+        if(!name) { card.style.display="none"; empty.style.display="block"; return; }
 
-        if (!data) {
-            alert("Player not found! Try Virat Kohli, MS Dhoni, Sachin Tendulkar");
-            return;
-        }
+        const data = archiveDB[name];
 
-        document.getElementById("playerSection").style.display = "block";
-        document.getElementById("playerTitle").innerText = name.toUpperCase();
-        document.getElementById("matches").innerText = data.matches;
-        document.getElementById("runs").innerText = data.totalRuns;
-        document.getElementById("highest").innerText = data.highest;
+        // --- MATHEMATICS ENGINE ---
+        const n = data.matches;
+        const mean = data.avg;
+        const sd = data.sd;
 
-        const ctx = document.getElementById("statsChart").getContext("2d");
+        // Math 1: 95% Confidence Interval [ CI = mean ± 1.96 * (sd / sqrt(n)) ]
+        const standardError = sd / Math.sqrt(n);
+        const marginOfError = 1.96 * standardError;
+        const lowerBound = (mean - marginOfError).toFixed(2);
+        const upperBound = (mean + marginOfError).toFixed(2);
 
-        if (chart) chart.destroy();
+        // Math 2: Coefficient of Variation [ CV = (sd / mean) * 100 ]
+        const cv = ((sd / mean) * 100).toFixed(1);
 
-        chart = new Chart(ctx, {
-            type: "line",
+        // --- UPDATE UI ---
+        empty.style.display="none";
+        card.style.display="block";
+
+        document.getElementById("pName").innerText = name;
+        document.getElementById("pCountry").innerText = data.country;
+        
+        document.getElementById("pMatches").innerText = n;
+        document.getElementById("pRuns").innerText = data.runs;
+        document.getElementById("pAvg").innerText = mean.toFixed(1);
+        document.getElementById("pSD").innerText = sd.toFixed(1);
+
+        document.getElementById("pCI").innerText = `[ ${lowerBound}  ↔  ${upperBound} ]`;
+        document.getElementById("pCV").innerText = `${cv}% Volatility`;
+
+        renderMathChart(mean, lowerBound, upperBound);
+    }
+
+    // 4. VISUALIZE PROBABILITY BOUNDS
+    function renderMathChart(mean, lower, upper) {
+        const ctx = document.getElementById('historyChart').getContext('2d');
+        if (histChart) { histChart.destroy(); }
+
+        histChart = new Chart(ctx, {
+            type: 'bar',
             data: {
-                labels: data.years,
+                labels: ['Lower Bound 95%', 'Observed Mean (μ)', 'Upper Bound 95%'],
                 datasets: [{
-                    label: "Runs Per Year",
-                    data: data.runs,
-                    borderColor: "#1e3c72",
-                    backgroundColor: "rgba(30,60,114,0.2)",
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.3
+                    label: 'True Average Variance Range',
+                    data: [lower, mean, upper],
+                    backgroundColor: ['rgba(255, 68, 68, 0.7)', 'rgba(0, 204, 204, 0.9)', 'rgba(0, 255, 136, 0.7)'],
+                    borderColor: ['#ff4444', '#00cccc', '#00ff88'],
+                    borderWidth: 1
                 }]
             },
             options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: "Performance Over Years"
-                    }
-                }
+                responsive: true, maintainAspectRatio: false,
+                scales: {
+                    y: { min: Math.floor(lower - 5), grid: { color: '#333' }, ticks: { color: '#888' } },
+                    x: { grid: { display: false }, ticks: { color: '#fff', font: { size: 11 } } }
+                },
+                plugins: { legend: { display: false } }
             }
         });
     }

@@ -1,85 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sports Analytics Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Metrics - Vector Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* --- DARK THEME CORE --- */
+        body { background-color: #050505; color: white; font-family: 'Montserrat', sans-serif; margin: 0; overflow-x: hidden; }
+        .cyan { color: #00cccc; }
+        
+        .page-header { text-align: center; border-bottom: 2px solid #00cccc; padding: 40px 20px 20px; margin-bottom: 40px; background: #0a0a0a; }
+        .page-header h1 { font-family: 'Oswald', sans-serif; font-size: 45px; margin: 0; text-transform: uppercase; }
+        .page-header p { color: #888; font-size: 14px; margin-top: 5px; }
 
-<style>
-  /* --- GLOBAL STYLES (DO NOT CHANGE) --- */
-  body, html {
-    margin: 0;
-    padding: 0;
-    font-family: 'Montserrat', sans-serif;
-    background-color: #0b0b0b; /* Standard Dark Grey Background */
-    color: white;
-  }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
-  /* --- NAVIGATION BAR (Standard) --- */
-  .nav-bar {
-    padding: 20px;
-    background: rgba(255,255,255,0.05); /* Subtle background for nav */
-  }
+        /* --- PLAYER CARDS --- */
+        .registry-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 30px; margin-bottom: 50px; }
+        
+        .player-card { background: #111; border: 1px solid #333; border-radius: 8px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: 0.3s; }
+        .player-card:hover { border-color: #00cccc; transform: translateY(-5px); }
+        
+        .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
+        .card-header h2 { font-family: 'Oswald', sans-serif; margin: 0; color: #00cccc; font-size: 28px; text-transform: uppercase; }
+        .role { background: #222; padding: 5px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; color: #aaa; text-transform: uppercase; }
 
-  .back-btn {
-    text-decoration: none;
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    transition: color 0.3s;
-  }
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; text-align: center; }
+        .stat { background: #1a1a1a; padding: 15px 10px; border-radius: 4px; border-bottom: 2px solid #00cccc; }
+        .stat .val { display: block; font-size: 24px; font-weight: bold; font-family: 'Oswald', sans-serif; color: white; }
+        .stat .label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; display: block; }
 
-  .back-btn i { margin-right: 10px; }
-  .back-btn:hover { color: #00cccc; } /* Standard Teal Hover */
+        .btn-analyze { width: 100%; padding: 12px; background: transparent; border: 1px solid #00cccc; color: #00cccc; font-family: 'Oswald', sans-serif; font-size: 16px; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .btn-analyze:hover { background: #00cccc; color: black; }
+        
+        .chart-container { position: relative; height: 250px; width: 100%; margin-bottom: 15px; display: none; }
 
-  /* --- CONTENT AREA (Teammate: Work inside here) --- */
-  .container {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 20px;
-    text-align: center;
-  }
+        /* --- COMPARISON SECTION --- */
+        #comparison { background: #0a0a0a; padding: 50px 20px; border-top: 1px solid #333; }
+        .compare-box { max-width: 1000px; margin: 0 auto; background: #111; border: 1px solid #333; border-radius: 8px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+        .compare-box h2 { font-family: 'Oswald', sans-serif; font-size: 36px; text-align: center; margin-top: 0; text-transform: uppercase; }
+        .compare-box p { text-align: center; color: #888; margin-bottom: 30px; }
 
-  h1 {
-    font-size: 50px;
-    text-transform: uppercase;
-    color: #00cccc; /* Teal Title */
-    margin-bottom: 20px;
-  }
+        .selectors { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; gap: 20px; }
+        select { flex: 1; padding: 15px; background: #222; border: 1px solid #444; color: white; border-radius: 4px; font-family: 'Montserrat', sans-serif; outline: none; font-size: 16px; }
+        select:focus { border-color: #00cccc; }
+        .vs-circle { width: 50px; height: 50px; background: #00cccc; color: black; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-family: 'Oswald', sans-serif; font-weight: bold; font-size: 20px; flex-shrink: 0; }
 
-  p {
-    font-size: 18px;
-    line-height: 1.6;
-    color: #ddd;
-  }
+        .btn-compare { width: 100%; padding: 18px; background: #00cccc; color: black; font-weight: bold; font-family: 'Oswald', sans-serif; font-size: 20px; border: none; cursor: pointer; text-transform: uppercase; transition: 0.3s; border-radius: 4px; }
+        .btn-compare:hover { background: white; box-shadow: 0 0 20px rgba(0,204,204,0.5); }
 
-  /* Add your own custom CSS below this line */
-
-</style>
+        .math-box { background: rgba(0, 204, 204, 0.05); border-left: 3px solid #00cccc; padding: 20px; margin-top: 30px; font-family: 'Courier New', monospace; font-size: 13px; color: #ccc; line-height: 1.6; display: none; }
+        .math-box strong { color: white; font-family: 'Montserrat', sans-serif; font-size: 14px; }
+        .comp-chart-wrapper { position: relative; height: 400px; width: 100%; margin-top: 30px; display: none; }
+    </style>
 </head>
 <body>
 
-<div class="nav-bar">
-  <a href="index.html" class="back-btn">
-    <i class="fas fa-arrow-left"></i> Back to Home
-  </a>
-</div>
+    <nav class="navbar">
+        <div class="logo">PERFORMANCE<span class="cyan">METRICS</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="predictive-insights.html">Forecaster</a></li>
+            <li><a href="#comparison">Math Comparison</a></li>
+        </ul>
+    </nav>
 
-<div class="container">
-  
-  <h1>Performance-metric</h1>
+    <header class="page-header">
+        <h1>Athlete <span class="cyan">Database</span></h1>
+        <p>Vector Magnitude & Expected Value Formulations</p>
+    </header>
 
-  <div style="border: 2px dashed #555; padding: 40px; margin-top: 20px; border-radius: 10px;">
-    <p>🚧 <strong>Work in Progress</strong> 🚧</p>
-    <p>Teammate: Delete this box and add your graphs, text, or images here.</p>
-  </div>
+    <main id="registry" class="container">
+        <div class="registry-grid">
+            
+            <div class="player-card">
+                <div class="card-header">
+                    <h2>Rohit Sharma</h2><span class="role">Batsman</span>
+                </div>
+                <div class="stats-row">
+                    <div class="stat"><span class="val">20109</span><span class="label">Runs</span></div>
+                    <div class="stat"><span class="val">50</span><span class="label">Centuries</span></div>
+                    <div class="stat"><span class="val">140.8</span><span class="label">SR</span></div>
+                    <div class="stat"><span class="val">508</span><span class="label">Matches</span></div>
+                </div>
+                <div class="chart-container" id="box-rohit"><canvas id="chart-rohit"></canvas></div>
+                <button class="btn-analyze" onclick="drawVectorChart('rohit')">Compute Vector Analysis</button>
+            </div>
 
-</div>
+            <div class="player-card">
+                <div class="card-header">
+                    <h2>Virat Kohli</h2><span class="role">Batsman</span>
+                </div>
+                <div class="stats-row">
+                    <div class="stat"><span class="val">27000</span><span class="label">Runs</span></div>
+                    <div class="stat"><span class="val">85</span><span class="label">Centuries</span></div>
+                    <div class="stat"><span class="val">137.0</span><span class="label">SR</span></div>
+                    <div class="stat"><span class="val">311</span><span class="label">Matches</span></div>
+                </div>
+                <div class="chart-container" id="box-virat"><canvas id="chart-virat"></canvas></div>
+                <button class="btn-analyze" onclick="drawVectorChart('virat')">Compute Vector Analysis</button>
+            </div>
 
+            <div class="player-card">
+                <div class="card-header">
+                    <h2>Smriti Mandhana</h2><span class="role">Batsman</span>
+                </div>
+                <div class="stats-row">
+                    <div class="stat"><span class="val">10053</span><span class="label">Runs</span></div>
+                    <div class="stat"><span class="val">17</span><span class="label">Centuries</span></div>
+                    <div class="stat"><span class="val">122.4</span><span class="label">SR</span></div>
+                    <div class="stat"><span class="val">281</span><span class="label">Matches</span></div>
+                </div>
+                <div class="chart-container" id="box-smriti"><canvas id="chart-smriti"></canvas></div>
+                <button class="btn-analyze" onclick="drawVectorChart('smriti')">Compute Vector Analysis</button>
+            </div>
+
+            <div class="player-card">
+                <div class="card-header">
+                    <h2>MS Dhoni</h2><span class="role">Wicketkeeper</span>
+                </div>
+                <div class="stats-row">
+                    <div class="stat"><span class="val">17266</span><span class="label">Runs</span></div>
+                    <div class="stat"><span class="val">16</span><span class="label">Centuries</span></div>
+                    <div class="stat"><span class="val">126.1</span><span class="label">SR</span></div>
+                    <div class="stat"><span class="val">538</span><span class="label">Matches</span></div>
+                </div>
+                <div class="chart-container" id="box-dhoni"><canvas id="chart-dhoni"></canvas></div>
+                <button class="btn-analyze" onclick="drawVectorChart('dhoni')">Compute Vector Analysis</button>
+            </div>
+
+        </div>
+    </main>
+
+    <section id="comparison">
+        <div class="compare-box">
+            <h2>Mathematical <span class="cyan">Showdown</span></h2>
+            <p>Calculate Variance, Expected Value, and Normalized Magnitudes.</p>
+
+            <div class="selectors">
+                <select id="p1-select">
+                    <option value="virat">Virat Kohli</option>
+                    <option value="rohit">Rohit Sharma</option>
+                    <option value="smriti">Smriti Mandhana</option>
+                    <option value="dhoni">MS Dhoni</option>
+                </select>
+                <div class="vs-circle">VS</div>
+                <select id="p2-select">
+                    <option value="rohit">Rohit Sharma</option>
+                    <option value="virat">Virat Kohli</option>
+                    <option value="smriti">Smriti Mandhana</option>
+                    <option value="dhoni">MS Dhoni</option>
+                </select>
+            </div>
+
+            <button class="btn-compare" onclick="compareMathModels()">Execute Mathematical Comparison</button>
+
+            <div class="math-box" id="mathOutput">
+                <strong>1. Expected Value E[X] (Runs/Match)</strong><br>
+                E[X] = Σ(Runs) / n<br><br>
+                
+                <strong>2. Vector Magnitude ||v|| (Normalized Performance)</strong><br>
+                ||v|| = √ [ (Normalized_Runs)² + (Normalized_SR)² + (Normalized_Centuries)² ]<br>
+                <em>Treats performance as a 3-Dimensional vector in Euclidean space.</em><br><br>
+
+                <div id="dynamicMathResults" style="color: #00cccc; margin-top: 15px; font-weight: bold; font-family: 'Montserrat', sans-serif;"></div>
+            </div>
+
+            <div class="comp-chart-wrapper" id="compWrapper">
+                <canvas id="compChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // 1. DATA DICTIONARY
+        const db = {
+            "rohit": { name: "Rohit Sharma", runs: 20109, cent: 50, sr: 140.8, matches: 508 },
+            "virat": { name: "Virat Kohli", runs: 27000, cent: 85, sr: 137.0, matches: 311 },
+            "smriti": { name: "Smriti Mandhana", runs: 10053, cent: 17, sr: 122.4, matches: 281 },
+            "dhoni": { name: "MS Dhoni", runs: 17266, cent: 16, sr: 126.1, matches: 538 }
+        };
+
+        let activeCharts = {};
+        let comparisonChart = null;
+
+        // 2. INDIVIDUAL VECTOR ANALYSIS
+        function drawVectorChart(playerId) {
+            const p = db[playerId];
+            const boxId = 'box-' + playerId;
+            const canvasId = 'chart-' + playerId;
+            
+            // Show canvas container
+            document.getElementById(boxId).style.display = 'block';
+
+            // Math: Calculate Expected Value (Runs per match)
+            const expectedValue = p.runs / p.matches;
+
+            if (activeCharts[playerId]) { activeCharts[playerId].destroy(); }
+
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            activeCharts[playerId] = new Chart(ctx, {
+                type: 'polarArea',
+                data: {
+                    labels: ['Expected Value E[X]', 'Strike Rate (v)', 'Conversion Rate (C/M)'],
+                    datasets: [{
+                        data: [
+                            expectedValue, 
+                            p.sr * 0.5, // Scaled for visual balance
+                            (p.cent / p.matches) * 1000 // Scaled to percentage representation
+                        ],
+                        backgroundColor: [ 'rgba(0, 204, 204, 0.6)', 'rgba(255, 206, 86, 0.6)', 'rgba(255, 99, 132, 0.6)' ],
+                        borderColor: '#111', borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { r: { ticks: { display: false }, grid: { color: '#333' } } },
+                    plugins: { legend: { position: 'right', labels: { color: '#ccc', font: { size: 10 } } } }
+                }
+            });
+        }
+
+        // 3. COMPARATIVE MATHEMATICAL MODELING
+        function compareMathModels() {
+            const id1 = document.getElementById('p1-select').value;
+            const id2 = document.getElementById('p2-select').value;
+
+            if (id1 === id2) { alert("Mathematical Error: Cannot compute variance against identical vectors."); return; }
+
+            const p1 = db[id1];
+            const p2 = db[id2];
+
+            // MATH: Expected Value E[X]
+            const ex1 = (p1.runs / p1.matches).toFixed(2);
+            const ex2 = (p2.runs / p2.matches).toFixed(2);
+
+            // MATH: Vector Magnitude ||v||
+            // Scale data so one massive number (runs) doesn't dominate the vector space
+            const normRuns1 = p1.runs / 1000; const normRuns2 = p2.runs / 1000;
+            const normCent1 = p1.cent * 2; const normCent2 = p2.cent * 2;
+            const normSr1 = p1.sr / 10; const normSr2 = p2.sr / 10;
+
+            const mag1 = Math.sqrt(Math.pow(normRuns1, 2) + Math.pow(normCent1, 2) + Math.pow(normSr1, 2)).toFixed(2);
+            const mag2 = Math.sqrt(Math.pow(normRuns2, 2) + Math.pow(normCent2, 2) + Math.pow(normSr2, 2)).toFixed(2);
+
+            // Show UI Elements
+            document.getElementById('mathOutput').style.display = 'block';
+            document.getElementById('compWrapper').style.display = 'block';
+
+            // Print Math Results
+            document.getElementById('dynamicMathResults').innerHTML = `
+                => ${p1.name} Vector: E[X] = ${ex1} | Magnitude ||v|| = ${mag1} <br>
+                => ${p2.name} Vector: E[X] = ${ex2} | Magnitude ||v|| = ${mag2}
+            `;
+
+            // Draw Chart
+            if (comparisonChart) { comparisonChart.destroy(); }
+            const ctx = document.getElementById('compChart').getContext('2d');
+            
+            comparisonChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Expected Value E[X]', 'Strike Rate', 'Normalized Magnitude ||v||'],
+                    datasets: [
+                        { label: p1.name, data: [ex1, p1.sr, mag1], backgroundColor: '#00cccc' },
+                        { label: p2.name, data: [ex2, p2.sr, mag2], backgroundColor: '#ff4444' }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: 'white' } } },
+                    scales: {
+                        y: { grid: { color: '#333' }, ticks: { color: '#888' } },
+                        x: { grid: { display: false }, ticks: { color: '#fff' } }
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 </html>

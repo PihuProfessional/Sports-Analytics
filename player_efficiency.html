@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Player Efficiency</title>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
@@ -21,7 +20,6 @@ body {
     100% { background-position: 0% 50%; }
 }
 
-/* Floating shapes */
 .background-shapes span {
     position: fixed;
     width: 40px;
@@ -33,15 +31,15 @@ body {
     z-index: 0;
 }
 
-.background-shapes span:nth-child(1) { left: 10%; }
-.background-shapes span:nth-child(2) { left: 30%; width: 60px; height: 60px; }
-.background-shapes span:nth-child(3) { left: 50%; }
-.background-shapes span:nth-child(4) { left: 70%; width: 80px; height: 80px; }
-.background-shapes span:nth-child(5) { left: 90%; }
+.background-shapes span:nth-child(1){left:10%;}
+.background-shapes span:nth-child(2){left:30%;width:60px;height:60px;}
+.background-shapes span:nth-child(3){left:50%;}
+.background-shapes span:nth-child(4){left:70%;width:80px;height:80px;}
+.background-shapes span:nth-child(5){left:90%;}
 
 @keyframes float {
-    from { transform: translateY(0); opacity: 0.6; }
-    to { transform: translateY(-120vh); opacity: 0; }
+    from { transform: translateY(0); opacity:0.6;}
+    to { transform: translateY(-120vh); opacity:0;}
 }
 
 .container {
@@ -55,100 +53,75 @@ body {
     box-shadow: 0 15px 35px rgba(0,0,0,0.15);
 }
 
-h2 {
-    text-align: center;
-    color: #1e3a8a;
-}
+h2 { text-align:center; color:#1e3a8a; }
 
 form {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 15px;
+    display:grid;
+    grid-template-columns: repeat(4,1fr);
+    gap:10px;
+    margin-bottom:15px;
 }
 
-input {
-    padding: 8px;
-}
+input { padding:8px; }
 
-.buttons {
-    text-align: center;
-    margin-bottom: 20px;
-}
+.buttons { text-align:center; margin-bottom:20px; }
 
 button {
-    padding: 8px 14px;
-    margin: 5px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    color: white;
+    padding:8px 14px;
+    margin:5px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    color:white;
 }
+.add{background:#16a34a;}
+.update{background:#2563eb;}
+.show{background:#7c3aed;}
+.delete{background:#dc2626;}
 
-.add { background: #16a34a; }
-.update { background: #2563eb; }
-.show { background: #7c3aed; }
-.delete { background: #dc2626; }
+table { width:100%; border-collapse:collapse; }
+th,td { border:1px solid #ccc; padding:8px; text-align:center; }
+th { background:#2563eb; color:white; }
+tr:nth-child(even){ background:#f1f5f9; }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: center;
-}
-
-th {
-    background: #2563eb;
-    color: white;
-}
-
-tr:nth-child(even) {
-    background: #f1f5f9;
-}
-
-canvas {
-    margin: 30px auto;
-    display: block;
-}
+canvas { margin:30px auto; display:block; }
 </style>
 </head>
 
 <body>
 
 <div class="background-shapes">
-    <span></span><span></span><span></span><span></span><span></span>
+<span></span><span></span><span></span><span></span><span></span>
 </div>
 
 <div class="container">
-<h2>Player Efficiency</h2>
+<h2>Player Efficiency Analyzer</h2>
 
 <form>
-    <input type="text" id="playerName" placeholder="Player Name">
-    <input type="number" id="matches" placeholder="Matches Played">
-    <input type="number" id="runs" placeholder="Total Runs">
+<input type="text" id="playerName" placeholder="Player Name">
+<input type="number" id="matches" placeholder="Matches Played">
+<input type="number" id="runs" placeholder="Total Runs">
+<input type="number" id="outs" placeholder="Times Out">
 </form>
 
 <div class="buttons">
-    <button class="add" onclick="addPlayer()">Add Player</button>
-    <button class="update" onclick="updatePlayer()">Update Player</button>
-    <button class="show" onclick="renderTable()">Show Players</button>
-    <button class="delete" onclick="deletePlayer()">Delete Player</button>
+<button class="add" onclick="addPlayer()">Add Player</button>
+<button class="update" onclick="updatePlayer()">Update Player</button>
+<button class="show" onclick="renderTable()">Show Players</button>
+<button class="delete" onclick="deletePlayer()">Delete Player</button>
 </div>
 
 <table>
 <thead>
 <tr>
-    <th>Player</th>
-    <th>Matches</th>
-    <th>Runs</th>
-    <th>Average</th>
-    <th>Strike Rate</th>
-    <th>Runs / Match</th>
-    <th>Efficiency</th>
+<th>Player</th>
+<th>Matches</th>
+<th>Runs</th>
+<th>Times Out</th>
+<th>Average</th>
+<th>Strike Rate</th>
+<th>Runs/Match</th>
+<th>Efficiency</th>
 </tr>
 </thead>
 <tbody id="playerTable"></tbody>
@@ -161,117 +134,115 @@ canvas {
 let selectedIndex = -1;
 let chart = null;
 
-/* 🔹 PRELOADED PLAYER DATA */
+/* PRELOADED DATA */
 let players = [
-    { name: "Player A", matches: 20, runs: 850 },
-    { name: "Player B", matches: 18, runs: 720 },
-    { name: "Player C", matches: 22, runs: 910 }
+ {name:"Player A", matches:20, runs:850, outs:15},
+ {name:"Player B", matches:18, runs:720, outs:16},
+ {name:"Player C", matches:22, runs:910, outs:17}
 ];
 
-/* Calculate stats */
-function calculate(p) {
-    p.average = p.runs / p.matches;
+/* REAL CALCULATIONS */
+function calculate(p){
+    p.average = p.runs / p.outs;
     let ballsFaced = p.matches * 30;
     p.strikeRate = (p.runs / ballsFaced) * 100;
     p.runsPerMatch = p.runs / p.matches;
-    p.efficiency =
-        (p.average * 0.4) +
-        (p.strikeRate * 0.3) +
-        (p.runsPerMatch * 0.3);
+    p.efficiency = (p.average*0.4)+(p.strikeRate*0.3)+(p.runsPerMatch*0.3);
 }
-
 players.forEach(calculate);
 
-/* CRUD Functions */
-function addPlayer() {
-    if (!playerName.value) return;
-    let p = {
-        name: playerName.value,
-        matches: Number(matches.value),
-        runs: Number(runs.value)
-    };
-    calculate(p);
-    players.push(p);
-    clearForm();
-    renderTable();
+/* CRUD */
+function addPlayer(){
+ if(!playerName.value) return;
+ let p={
+  name:playerName.value,
+  matches:Number(matches.value),
+  runs:Number(runs.value),
+  outs:Number(outs.value)
+ };
+ calculate(p);
+ players.push(p);
+ clearForm();
+ renderTable();
 }
 
-function updatePlayer() {
-    if (selectedIndex === -1) return alert("Select a player first");
-    let p = {
-        name: playerName.value,
-        matches: Number(matches.value),
-        runs: Number(runs.value)
-    };
-    calculate(p);
-    players[selectedIndex] = p;
-    selectedIndex = -1;
-    clearForm();
-    renderTable();
+function updatePlayer(){
+ if(selectedIndex===-1) return alert("Select player first");
+ let p={
+  name:playerName.value,
+  matches:Number(matches.value),
+  runs:Number(runs.value),
+  outs:Number(outs.value)
+ };
+ calculate(p);
+ players[selectedIndex]=p;
+ selectedIndex=-1;
+ clearForm();
+ renderTable();
 }
 
-function deletePlayer() {
-    if (selectedIndex === -1) return alert("Select a player first");
-    players.splice(selectedIndex, 1);
-    selectedIndex = -1;
-    renderTable();
+function deletePlayer(){
+ if(selectedIndex===-1) return alert("Select player first");
+ players.splice(selectedIndex,1);
+ selectedIndex=-1;
+ renderTable();
 }
 
-function renderTable() {
-    let tbody = document.getElementById("playerTable");
-    tbody.innerHTML = "";
-    players.forEach((p, i) => {
-        tbody.innerHTML += `
-        <tr onclick="selectRow(${i})">
-            <td>${p.name}</td>
-            <td>${p.matches}</td>
-            <td>${p.runs}</td>
-            <td>${p.average.toFixed(2)}</td>
-            <td>${p.strikeRate.toFixed(2)}</td>
-            <td>${p.runsPerMatch.toFixed(2)}</td>
-            <td>${p.efficiency.toFixed(2)}</td>
-        </tr>`;
-    });
-    drawChart();
+function renderTable(){
+ let tbody=document.getElementById("playerTable");
+ tbody.innerHTML="";
+ players.forEach((p,i)=>{
+  tbody.innerHTML+=`
+  <tr onclick="selectRow(${i})">
+   <td>${p.name}</td>
+   <td>${p.matches}</td>
+   <td>${p.runs}</td>
+   <td>${p.outs}</td>
+   <td>${p.average.toFixed(2)}</td>
+   <td>${p.strikeRate.toFixed(2)}</td>
+   <td>${p.runsPerMatch.toFixed(2)}</td>
+   <td>${p.efficiency.toFixed(2)}</td>
+  </tr>`;
+ });
+ drawChart();
 }
 
-function selectRow(i) {
-    selectedIndex = i;
-    let p = players[i];
-    playerName.value = p.name;
-    matches.value = p.matches;
-    runs.value = p.runs;
+function selectRow(i){
+ selectedIndex=i;
+ let p=players[i];
+ playerName.value=p.name;
+ matches.value=p.matches;
+ runs.value=p.runs;
+ outs.value=p.outs;
 }
 
-function drawChart() {
-    if (chart) chart.destroy();
-    chart = new Chart(document.getElementById("efficiencyChart"), {
-        type: "bar",
-        data: {
-            labels: players.map(p => p.name),
-            datasets: [{
-                label: "Efficiency Score",
-                data: players.map(p => p.efficiency),
-                backgroundColor: "#60a5fa",
-                barThickness: 50
-            }]
-        },
-        options: {
-            responsive: false,
-            scales: { y: { beginAtZero: true } }
-        }
-    });
+function drawChart(){
+ if(chart) chart.destroy();
+ chart=new Chart(document.getElementById("efficiencyChart"),{
+  type:"bar",
+  data:{
+   labels:players.map(p=>p.name),
+   datasets:[{
+    label:"Efficiency Score",
+    data:players.map(p=>p.efficiency),
+    backgroundColor:"#60a5fa",
+    barThickness:50
+   }]
+  },
+  options:{responsive:false, scales:{y:{beginAtZero:true}}}
+ });
 }
 
-function clearForm() {
-    playerName.value = "";
-    matches.value = "";
-    runs.value = "";
+function clearForm(){
+ playerName.value="";
+ matches.value="";
+ runs.value="";
+ outs.value="";
 }
 
-/* 🔹 AUTO LOAD DATA ON PAGE LOAD */
 renderTable();
 </script>
 
 </body>
 </html>
+

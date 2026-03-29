@@ -19,8 +19,8 @@ The goal is to make complex sports data easy to understand for users.
 ### Homepage
 ![Homepage]([PASTE_IMAGE_LINK_HERE](https://github.com/PihuProfessional/Sports-Analytics/blob/main/Screenshot%202026-03-29%20222359.png))
 
-### Metrics Page
-![Metrics](PASTE_IMAGE_LINK_HERE)
+### Dashboard Page
+![Dashboard]([PASTE_IMAGE_LINK_HERE](https://github.com/PihuProfessional/Sports-Analytics/blob/main/Screenshot%202026-03-29%20222427.png))
 
-### Performance Dashboard
-![Performance](PASTE_IMAGE_LINK_HERE)
+### Sport-Science
+![SportScience](PASTE_IMAGE_LINK_HERE)

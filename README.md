@@ -15,10 +15,10 @@ The goal is to make complex sports data easy to understand for users.
 ## Screenshots
 
 ### Homepage
-![Homepage]([PASTE_IMAGE_LINK_HERE](https://github.com/PihuProfessional/Sports-Analytics/blob/main/Screenshot%202026-03-29%20222359.png))
+![Homepage](https://github.com/PihuProfessional/Sports-Analytics/blob/main/Screenshot%202026-03-29%20222359.png?raw=true)
 
 ### Dashboard Page
-![Dashboard]([PASTE_IMAGE_LINK_HERE](https://github.com/PihuProfessional/Sports-Analytics/blob/main/Screenshot%202026-03-29%20222427.png))
+![Dashboard](https://github.com/PihuProfessional/Sports-Analytics/blob/main/Screenshot%202026-03-29%20222427.png?raw=true)
 
 ### Sport-Science
-![SportScience]([PASTE_IMAGE_LINK_HERE](https://github.com/PihuProfessional/Sports-Analytics/blob/main/Screenshot%202026-03-29%20222946.png))
+![SportScience](https://github.com/PihuProfessional/Sports-Analytics/blob/main/Screenshot%202026-03-29%20222946.png?raw=true)

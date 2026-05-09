@@ -1,78 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sports Analytics</title>
-
-<style>
-  /* Full screen container */
-  .slider {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-    z-index: -1;
-  }
-
-  /* Slide images */
-  .slide {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    animation: fade 18s infinite;
-  }
-
-  /* Animation speed logic */
-  .slide:nth-child(1) { animation-delay: 0s; }
-  .slide:nth-child(2) { animation-delay: 3s; }
-  .slide:nth-child(3) { animation-delay: 6s; }
-  .slide:nth-child(4) { animation-delay: 9s; }
-  .slide:nth-child(5) { animation-delay: 12s; }
-  .slide:nth-child(6) { animation-delay: 15s; }
-
-  /* FADE animation - slow → fast → slow */
-  @keyframes fade {
-    0%   { opacity: 0; }
-    10%  { opacity: 1; }   /* slow fade in */
-    30%  { opacity: 1; }   /* visible */
-    40%  { opacity: 0; }   /* fast fade out */
-    100% { opacity: 0; }
-  }
-
-  /* Title text */
-  .title {
-    position: absolute;
-    top: 40%;
-    width: 100%;
-    text-align: center;
-    font-size: 75px;
-    font-family: Arial, sans-serif;
-    color: white;
-    font-weight: bold;
-    text-shadow: 0 0 10px black;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Analytics Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
+<body class="home-page">
 
-<body>
+    <div class="slider-window">
+        <div class="overlay"></div>
+        <div class="slider-track">
+            <img class="slide" src="cricket1.jpg" alt="Cricket 1">
+            <img class="slide" src="cricket2.jpg" alt="Cricket 2">
+            <img class="slide" src="cricket3.jpg" alt="Cricket 3">
+            <img class="slide" src="cricket4.webp" alt="Cricket 4">
+            <img class="slide" src="cricket5.webp" alt="Cricket 5">
+            <img class="slide" src="cricket6.avif" alt="Cricket 6">
+        </div>
+    </div>
 
-<div class="slider">
-  <img class="slide" src="cricket1.jpg">
-  <img class="slide" src="cricket2.jpg">
-  <img class="slide" src="cricket3.jpg">
-  <img class="slide" src="cricket4.jpg">
-  <img class="slide" src="cricket5.jpg">
-  <img class="slide" src="cricket6.jpg">
-</div>
+    <nav class="navbar">
+        <div class="brand-logo">SPORTS<span class="cyan">ANALYTICS</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="history.html">History</a></li>
+            <li><a href="team_comp.html">Modules</a></li>
+            <li><a href="predictive-insights.html">Insights</a></li>
+            
+        </ul>
+        <button class="btn-add-data" onclick="openModal()">Admin Access</button>
+    </nav>
 
-<div class="title">
-  SPORTS ANALYTICS
-</div>
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                TRANSFORM <br>
+                THE GAME WITH <br>
+                <span class="highlight-text">ANALYTICS</span>
+            </h1>
+            <a href="#modules" class="btn-hero">Explore Modules</a>
+        </div>
+    </section>
 
+    <section id="modules" class="modules-section">
+        <h2 class="section-title">Our <span class="cyan">Modules</span></h2>
+        <p class="section-desc">Advanced tools designed for coaches, analysts, and enthusiasts.</p>
+        
+        <div class="cards-grid">
+            <a href="history.html" class="feature-card">
+                <i class="fas fa-history"></i>
+                <h3>History</h3>
+            </a>
+            <a href="team_comp.html" class="feature-card">
+                <i class="fas fa-users"></i>
+                <h3>Team Comparison</h3>
+            </a>
+            <a href="sport-science.html" class="feature-card">
+                <i class="fas fa-users"></i>
+                <h3>Sport Science</h3>
+            <a href="predictive-insights.html" class="feature-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>Predictive Insights</h3>
+            </a>
+            <a href="player-effi.html" class="feature-card">
+                <i class="fas fa-users"></i>
+                <h3>Player efficiency</h3>
+            <a href="performance-metric.html" class="feature-card">
+                <i class="fas fa-running"></i>
+                <h3>Performance Metrics</h3>
+            </a>
+        </div>
+    </section>
+
+    <div id="adminModal" class="modal-overlay">
+        <div class="modal-box">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 style="color:white; margin-bottom:20px;">Add <span class="cyan">Player Data</span></h2>
+            
+            <div class="input-group">
+                <label>Player Name</label>
+                <input type="text" id="pName" placeholder="e.g. Virat Kohli">
+            </div>
+            <div class="input-group">
+                <label>Country / Team</label>
+                <input type="text" id="pCountry" placeholder="e.g. India">
+            </div>
+            <div class="input-group">
+                <label>Total Runs</label>
+                <input type="number" id="pRuns">
+            </div>
+            <div class="input-group">
+                <label>Batting Average</label>
+                <input type="number" id="pAvg">
+            </div>
+             <div class="input-group">
+                <label>Strike Rate</label>
+                <input type="number" id="pSR">
+            </div>
+             <div class="input-group">
+                <label>Centuries</label>
+                <input type="number" id="pCenturies">
+            </div>
+            <button class="save-btn" onclick="saveData()">Save to Database</button>
+        </div>
+    </div>
+
+    <script src="backend.js"></script>
+    <script>
+        function openModal() { document.getElementById('adminModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('adminModal').style.display = 'none'; }
+        
+        function saveData() {
+            // Note: This function relies on backend.js being present
+            alert("To save data, ensure backend.js is connected.");
+            closeModal();
+        }
+    </script>
 </body>
 </html>
